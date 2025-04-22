@@ -15,7 +15,7 @@
  */
 
 import { build } from "esbuild";
-import { openTelemetryPlugin } from "@opentelemetry-bundler-plugins/esbuild";
+import { openTelemetryPlugin } from "@opentelemetry-bundler-plugins/opentelemetry-esbuild-plugin-node";
 
 build({
   entryPoints: [`${__dirname}/app.ts`],

@@ -15,7 +15,7 @@
  */
 
 import { build } from "esbuild";
-import { openTelemetryPlugin } from "@opentelemetry-bundler-plugins/esbuild";
+import { openTelemetryPlugin } from "@opentelemetry-bundler-plugins/opentelemetry-esbuild-plugin-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 
 build({
