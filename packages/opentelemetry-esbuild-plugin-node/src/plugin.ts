@@ -20,27 +20,27 @@ import {
   OnLoadArgs,
   OpenTelemetryPluginParams,
   PluginData,
-} from './types';
-import { Plugin, PluginBuild } from 'esbuild';
-import { dirname, join } from 'path';
+} from "./types";
+import { Plugin, PluginBuild } from "esbuild";
+import { dirname, join } from "path";
 
-import { InstrumentationModuleDefinition } from '@opentelemetry/instrumentation';
-import { builtinModules } from 'module';
-import { readFile } from 'fs/promises';
-import { satisfies } from 'semver';
-import { wrapModule } from './common';
-import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
-import { getOtelPackageToInstrumentationConfig } from './config';
+import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
+import { builtinModules } from "module";
+import { readFile } from "fs/promises";
+import { satisfies } from "semver";
+import { wrapModule } from "./common";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { getOtelPackageToInstrumentationConfig } from "./config";
 
-const NODE_MODULES = 'node_modules/';
+const NODE_MODULES = "node_modules/";
 
-const BUILT_INS = new Set(builtinModules.flatMap(b => [b, `node:${b}`]));
+const BUILT_INS = new Set(builtinModules.flatMap((b) => [b, `node:${b}`]));
 
 function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
   if (!pluginConfig) return;
   if (pluginConfig.instrumentationConfig && pluginConfig.instrumentations) {
     throw new Error(
-      'OpenTelemetryPluginParams and instrumentations must not be used together'
+      "OpenTelemetryPluginParams and instrumentations must not be used together"
     );
   }
 }
@@ -58,9 +58,9 @@ export function openTelemetryPlugin(
   );
 
   return {
-    name: 'open-telemetry',
+    name: "open-telemetry",
     setup(build) {
-      build.onResolve({ filter: /.*/ }, async args => {
+      build.onResolve({ filter: /.*/ }, async (args) => {
         if (
           shouldIgnoreModule({
             namespace: args.namespace,
@@ -141,8 +141,8 @@ export function openTelemetryPlugin(
           return {
             contents: wrapModule(contents.toString(), {
               path: join(
-                extractedModule.package || '',
-                extractedModule.path || ''
+                extractedModule.package || "",
+                extractedModule.path || ""
               ),
               moduleVersion: pluginData.moduleVersion,
               instrumentationName: pluginData.instrumentationName,
@@ -169,7 +169,7 @@ function getPackageConfig({
   if (!pluginConfig) return;
   if (pluginConfig.instrumentations) {
     const matchingPlugin = pluginConfig.instrumentations.find(
-      i => i.instrumentationName === oTelInstrumentationPackage
+      (i) => i.instrumentationName === oTelInstrumentationPackage
     );
     if (!matchingPlugin) {
       throw new Error(
@@ -193,7 +193,7 @@ function extractPackageAndModulePath(
 ): { path: string; extractedModule: ExtractedModule | null } {
   // @see https://github.com/nodejs/node/issues/47000
   const path = require.resolve(
-    originalPath === '.' ? './' : originalPath === '..' ? '../' : originalPath,
+    originalPath === "." ? "./" : originalPath === ".." ? "../" : originalPath,
     { paths: [resolveDir] }
   );
 
@@ -201,9 +201,9 @@ function extractPackageAndModulePath(
   if (nodeModulesIndex < 0) return { path, extractedModule: null };
 
   const subPath = path.substring(nodeModulesIndex + NODE_MODULES.length);
-  const firstSlashIndex = subPath.indexOf('/');
+  const firstSlashIndex = subPath.indexOf("/");
 
-  if (!subPath.startsWith('@')) {
+  if (!subPath.startsWith("@")) {
     return {
       path,
       extractedModule: {
@@ -213,7 +213,7 @@ function extractPackageAndModulePath(
     };
   }
 
-  const secondSlash = subPath.substring(firstSlashIndex + 1).indexOf('/');
+  const secondSlash = subPath.substring(firstSlashIndex + 1).indexOf("/");
   return {
     path,
     extractedModule: {
@@ -237,11 +237,11 @@ function shouldIgnoreModule({
   pathPrefixesToIgnore?: string[];
 }): boolean {
   // If onLoad is being triggered from another plugin, ignore it
-  if (namespace !== 'file') return true;
+  if (namespace !== "file") return true;
   // If it's a local import from our code, ignore it
-  if (!importer.includes(NODE_MODULES) && path.startsWith('.')) return true;
+  if (!importer.includes(NODE_MODULES) && path.startsWith(".")) return true;
   // If it starts with a prefix to ignore, ignore it
-  if (pathPrefixesToIgnore?.some(prefix => path.startsWith(prefix))) {
+  if (pathPrefixesToIgnore?.some((prefix) => path.startsWith(prefix))) {
     return true;
   }
   // If it's marked as external, ignore it
@@ -274,7 +274,7 @@ async function getModuleVersion({
 
   const { path: packageJsonPath } = await build.resolve(path, {
     resolveDir,
-    kind: 'require-resolve',
+    kind: "require-resolve",
   });
   if (!packageJsonPath) return;
 
@@ -302,24 +302,24 @@ function getInstrumentation({
       instrumentationModuleDefinition.name === fullModulePath;
 
     if (!nameMatches) {
-      const fileMatch = instrumentationModuleDefinition.files.find(file => {
+      const fileMatch = instrumentationModuleDefinition.files.find((file) => {
         return file.name === path || file.name === fullModulePath;
       });
       if (!fileMatch) continue;
     }
 
     if (
-      instrumentationModuleDefinition.supportedVersions.some(supportedVersion =>
-        satisfies(moduleVersion, supportedVersion)
+      instrumentationModuleDefinition.supportedVersions.some(
+        (supportedVersion) => satisfies(moduleVersion, supportedVersion)
       )
     ) {
       return instrumentationModuleDefinition;
     }
 
     if (
-      instrumentationModuleDefinition.files.some(file => {
+      instrumentationModuleDefinition.files.some((file) => {
         if (file.name !== path && file.name !== fullModulePath) return false;
-        return file.supportedVersions.some(supportedVersion =>
+        return file.supportedVersions.some((supportedVersion) =>
           satisfies(moduleVersion, supportedVersion)
         );
       })

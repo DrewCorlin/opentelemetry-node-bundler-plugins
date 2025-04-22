@@ -17,6 +17,9 @@
     },
     {
       "path": "./packages/opentelemetry-esbuild-plugin-node"
+    },
+    {
+      "path": "./apps/opentelemetry-plugins-node-tests"
     }
   ]
 }
