@@ -5,6 +5,6 @@ dist/
 tsconfig.tsbuildinfo
 .DS_Store
 .nyc_output
-test-dist
+test-dist                                                                              
 .nx/cache
 .nx/workspace-data
