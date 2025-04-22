@@ -4,3 +4,7 @@ out/
 dist/
 tsconfig.tsbuildinfo
 .DS_Store
+
+
+.nx/cache
+.nx/workspace-data

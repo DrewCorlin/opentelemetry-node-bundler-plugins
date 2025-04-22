@@ -9,9 +9,7 @@
     "dist/**"
   ],
   "scripts": {
-    "serve": "node dist/index.js",
-    "build": "tsc --build tsconfig.lib.json",
-    "typecheck": "tsc"
+    "serve": "node dist/index.js"
   },
   "keywords": [],
   "author": "",

@@ -8,15 +8,11 @@
   "files": [
     "dist/**"
   ],
-  "scripts": {
-    "build": "tsc --build tsconfig.lib.json",
-    "typecheck": "tsc"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "18.16.9",
     "typescript": "~5.5.2"

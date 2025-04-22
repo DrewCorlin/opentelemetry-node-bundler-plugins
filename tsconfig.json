@@ -11,6 +11,9 @@
     },
     {
       "path": "./packages/zoo"
+    },
+    {
+      "path": "./packages/util"
     }
   ]
 }

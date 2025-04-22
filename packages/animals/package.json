@@ -8,10 +8,7 @@
   "files": [
     "dist/**"
   ],
-  "scripts": {
-    "build": "tsc --build tsconfig.lib.json",
-    "typecheck": "tsc"
-  },
+  "scripts": {},
   "keywords": [],
   "author": "",
   "license": "ISC",
