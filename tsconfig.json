@@ -4,15 +4,6 @@
   "files": [],
   "references": [
     {
-      "path": "./packages/animals"
-    },
-    {
-      "path": "./packages/names"
-    },
-    {
-      "path": "./packages/zoo"
-    },
-    {
       "path": "./packages/util"
     },
     {
