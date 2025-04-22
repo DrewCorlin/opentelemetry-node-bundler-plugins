@@ -1,0 +1,33 @@
+{
+  "name": "@tuskdesign/opentelemetry-esbuild-plugin-node",
+  "version": "0.0.1",
+  "private": true,
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "devDependencies": {
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-node": "^0.200.0",
+    "@types/node": "^22.14.1",
+    "@types/semver": "^7.7.0",
+    "ts-node": "^10.9.2",
+    "typescript": "5.8.3"
+  },
+  "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.58.0",
+    "@opentelemetry/instrumentation": "^0.200.0",
+    "semver": "^7.7.1",
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "esbuild": ">=0.21.x <=0.25.x"
+  }
+}
