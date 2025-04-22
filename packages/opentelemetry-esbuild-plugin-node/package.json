@@ -1,5 +1,5 @@
 {
-  "name": "@tuskdesign/opentelemetry-esbuild-plugin-node",
+  "name": "@opentelemetry-bundler-plugins/esbuild",
   "version": "0.0.1",
   "private": true,
   "main": "./dist/index.js",

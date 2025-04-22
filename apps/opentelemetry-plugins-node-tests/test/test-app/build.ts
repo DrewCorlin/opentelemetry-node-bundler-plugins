@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-import { build } from 'esbuild';
-import { openTelemetryPlugin } from '@tuskdesign/opentelemetry-esbuild-plugin-node';
+import { build } from "esbuild";
+import { openTelemetryPlugin } from "@opentelemetry-bundler-plugins/esbuild";
 
 build({
   entryPoints: [`${__dirname}/app.ts`],
   bundle: true,
-  outfile: 'test-dist/app.js',
-  target: 'node20',
-  platform: 'node',
+  outfile: "test-dist/app.js",
+  target: "node20",
+  platform: "node",
   sourcemap: true,
   plugins: [
     openTelemetryPlugin({
       instrumentationConfig: {
-        '@opentelemetry/instrumentation-pino': {
+        "@opentelemetry/instrumentation-pino": {
           logKeys: {
-            traceId: 'traceId',
-            spanId: 'spanId',
-            traceFlags: 'traceFlags',
+            traceId: "traceId",
+            spanId: "spanId",
+            traceFlags: "traceFlags",
           },
         },
       },
     }),
   ],
-}).catch(err => {
+}).catch((err) => {
   throw err;
 });
