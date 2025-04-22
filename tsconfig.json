@@ -8,6 +8,15 @@
     },
     {
       "path": "./apps/opentelemetry-plugins-node-tests"
+    },
+    {
+      "path": "./packages/opentelemetry-webpack-plugin-node"
+    },
+    {
+      "path": "./packages/opentelemetry-rollup-plugin-node"
+    },
+    {
+      "path": "./packages/opentelemetry-bundler-utils"
     }
   ]
 }
