@@ -90,7 +90,7 @@ buildScripts.forEach((buildScript) => {
           "fastify",
         ];
         await exec(
-          `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} ts-node ${__dirname}/test-app/${buildScript}`
+          `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} ts-node ${__dirname}/esbuild/${buildScript}`
         );
 
         const proc = startTestApp();
