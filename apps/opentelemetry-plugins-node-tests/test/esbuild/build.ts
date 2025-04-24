@@ -21,10 +21,9 @@ import path from "path";
 build({
   entryPoints: [path.normalize(`${__dirname}/../test-app/app.ts`)],
   bundle: true,
-  outfile: "test-dist/app.js",
+  outfile: "test-dist/esbuild/app.js",
   target: "node20",
   platform: "node",
-  sourcemap: true,
   plugins: [
     openTelemetryPlugin({
       instrumentationConfig: {

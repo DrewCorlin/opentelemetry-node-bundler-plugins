@@ -18,15 +18,17 @@ import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentation
 import * as assert from "assert";
 
 import { exec as execCb, spawnSync } from "child_process";
+import { rm, rmdir } from "fs/promises";
+import path from "path";
 
 import { promisify } from "util";
 
 const exec = promisify(execCb);
 
-function startTestApp() {
+function startTestApp(bundler: string) {
   return spawnSync(
     process.execPath,
-    ["--require", "./test-app/register.js", "../test-dist/app.js"],
+    ["--require", "./test-app/register.js", `../test-dist/${bundler}/app.js`],
     {
       cwd: __dirname,
       timeout: 60_000,
@@ -93,7 +95,7 @@ buildScripts.forEach((buildScript) => {
           `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} ts-node ${__dirname}/esbuild/${buildScript}`
         );
 
-        const proc = startTestApp();
+        const proc = startTestApp("esbuild");
 
         assert.ifError(proc.error);
         assert.equal(proc.status, 0, `proc.status (${proc.status})`);
@@ -109,6 +111,10 @@ buildScripts.forEach((buildScript) => {
               "OpenTelemetry automatic instrumentation started successfully"
           )
         );
+      });
+
+      after(async () => {
+        await rm(path.normalize(`${__dirname}/../test-dist/esbuild/app.js`));
       });
 
       it("fastify and pino", async () => {
