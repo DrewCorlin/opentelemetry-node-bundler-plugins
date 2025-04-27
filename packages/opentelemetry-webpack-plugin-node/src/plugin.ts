@@ -163,18 +163,20 @@ export class OpenTelemetryWebpackPlugin {
           "OpenTelemetryWebpackPlugin",
           (_, normalModule) => {
             if (normalModule.resourceResolveData.__otelPluginData) {
-              // Ignore mjs files
-              if (normalModule.request.endsWith(".js")) {
-                normalModule.loaders.push({
-                  loader: tempLoaderPath,
-                  options: {
-                    ...normalModule.resourceResolveData.__otelPluginData,
-                    wrapModule,
-                  },
-                  ident: "OpenTelemetryWebpackPlugin",
-                  type: "javascript/auto",
-                });
-              }
+              // TODO: our wrapModule function assumes CJS. Document need for loader to transpile
+              normalModule.loaders.unshift({
+                loader: tempLoaderPath,
+                options: {
+                  ...normalModule.resourceResolveData.__otelPluginData,
+                  path: normalModule.resourceResolveData.__otelPluginData.path.replace(
+                    ".mjs",
+                    ".js"
+                  ),
+                  wrapModule,
+                },
+                ident: "OpenTelemetryWebpackPlugin",
+                type: "javascript/auto",
+              });
             }
           }
         );
@@ -245,30 +247,44 @@ function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
     );
   }
 }
+/**
+ * For a given full path to a module,
+ *   return the package name it belongs to and the local path to the module
+ *   input: '/foo/node_modules/@co/stuff/foo/bar/baz.js'
+ *   output: { package: '@co/stuff', path: 'foo/bar/baz.js' }
+ */
+function extractPackageAndModulePath(
+  originalPath: string,
+  resolveDir: string
+): { path: string; extractedModule: ExtractedModule | null } {
+  // @see https://github.com/nodejs/node/issues/47000
+  const path = require.resolve(
+    originalPath === "." ? "./" : originalPath === ".." ? "../" : originalPath,
+    { paths: [resolveDir] }
+  );
 
-function extractPackageAndModulePath(originalPath: string, resolveDir: string) {
-  const resolved = require.resolve(originalPath, { paths: [resolveDir] });
-  const nodeModulesIndex = resolved.lastIndexOf(NODE_MODULES);
-  if (nodeModulesIndex < 0) return { path: resolved, extractedModule: null };
+  const nodeModulesIndex = path.lastIndexOf(NODE_MODULES);
+  if (nodeModulesIndex < 0) return { path, extractedModule: null };
 
-  const subPath = resolved.substring(nodeModulesIndex + NODE_MODULES.length);
-  const firstSlash = subPath.indexOf("/");
+  const subPath = path.substring(nodeModulesIndex + NODE_MODULES.length);
+  const firstSlashIndex = subPath.indexOf("/");
+
   if (!subPath.startsWith("@")) {
     return {
-      path: resolved,
+      path,
       extractedModule: {
-        package: subPath.substring(0, firstSlash),
-        path: subPath.substring(firstSlash + 1),
+        package: subPath.substring(0, firstSlashIndex),
+        path: subPath.substring(firstSlashIndex + 1),
       },
     };
   }
 
-  const secondSlash = subPath.substring(firstSlash + 1).indexOf("/");
+  const secondSlash = subPath.substring(firstSlashIndex + 1).indexOf("/");
   return {
-    path: resolved,
+    path,
     extractedModule: {
-      package: subPath.substring(0, firstSlash + secondSlash + 1),
-      path: subPath.substring(firstSlash + secondSlash + 2),
+      package: subPath.substring(0, firstSlashIndex + secondSlash + 1),
+      path: subPath.substring(firstSlashIndex + secondSlash + 2),
     },
   };
 }
@@ -324,9 +340,16 @@ function getInstrumentation({
     const nameMatches = def.name === path || def.name === fullModulePath;
 
     if (!nameMatches) {
-      const fileMatch = def.files.find(
-        (f) => f.name === path || f.name === fullModulePath
-      );
+      const fileMatch = def.files.find((f) => {
+        if (f.name === path || f.name === fullModulePath) return true;
+        if (
+          // TODO: clean this up in some way
+          f.name === path.replace(".mjs", ".js") ||
+          f.name === fullModulePath.replace(".mjs", ".js")
+        )
+          return true;
+        return false;
+      });
       if (!fileMatch) continue;
     }
 

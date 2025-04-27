@@ -22,10 +22,21 @@ webpack(
           use: "ts-loader",
           exclude: /node_modules/,
         },
+        {
+          type: "javascript/auto",
+          test: /\.mjs$/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              targets: "defaults",
+              presets: [["@babel/preset-env", { modules: "commonjs" }]],
+            },
+          },
+        },
       ],
     },
     resolve: {
-      extensions: [".ts", ".js"],
+      extensions: [".ts", ".js", ".mjs"],
     },
     plugins: [
       new OpenTelemetryWebpackPlugin({
