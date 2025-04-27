@@ -5,8 +5,9 @@
     "types": [
       "node"
     ],
-    "rootDir": "src",
-    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo"
+    "rootDir": ".",
+    "tsBuildInfoFile": "dist/tsconfig.app.tsbuildinfo",
+    "composite": true
   },
   "include": [
     "src/**/*.ts"
@@ -17,6 +18,9 @@
     "eslint.config.mjs"
   ],
   "references": [
+    {
+      "path": "../../packages/opentelemetry-webpack-plugin-node/tsconfig.lib.json"
+    },
     {
       "path": "../../packages/opentelemetry-esbuild-plugin-node/tsconfig.lib.json"
     }

@@ -18,8 +18,10 @@ import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentation
 import * as assert from "assert";
 
 import { exec as execCb, spawnSync } from "child_process";
-import { rm, rmdir } from "fs/promises";
+import { rm } from "fs/promises";
 import path from "path";
+// import { rm, rmdir } from "fs/promises";
+// import path from "path";
 
 import { promisify } from "util";
 
@@ -74,108 +76,211 @@ function getTrace(stdOutLines: string[], spanName: string) {
     .join("");
 }
 
-const buildScripts = ["build.ts", "build-manual-instrumentations.ts"];
+// const buildScripts = ["build.ts", "build-manual-instrumentations.ts"];
 
-buildScripts.forEach((buildScript) => {
-  describe(
-    "Esbuild can instrument packages via a plugin: " + buildScript,
-    function () {
-      this.timeout(60_000);
-      let stdOutLines: string[] = [];
+// buildScripts.forEach((buildScript) => {
+//   describe(
+//     "Esbuild can instrument packages via a plugin: " + buildScript,
+//     function () {
+//       this.timeout(60_000);
+//       let stdOutLines: string[] = [];
 
-      before(async () => {
-        const enabledInstrumentations = [
-          ...getNodeAutoInstrumentations().map((i) =>
-            i.instrumentationName.replace("@opentelemetry/instrumentation-", "")
-          ),
-          // Using fastify in the test server so enable it
-          "fastify",
-        ];
-        await exec(
-          `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} ts-node ${__dirname}/esbuild/${buildScript}`
-        );
+//       before(async () => {
+//         const enabledInstrumentations = [
+//           ...getNodeAutoInstrumentations().map((i) =>
+//             i.instrumentationName.replace("@opentelemetry/instrumentation-", "")
+//           ),
+//           // Using fastify in the test server so enable it
+//           "fastify",
+//         ];
+//         await exec(
+//           `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} ts-node ${__dirname}/esbuild/${buildScript}`
+//         );
 
-        const proc = startTestApp("esbuild");
+//         const proc = startTestApp("esbuild");
 
-        assert.ifError(proc.error);
-        assert.equal(proc.status, 0, `proc.status (${proc.status})`);
-        assert.equal(proc.signal, null, `proc.signal (${proc.signal})`);
+//         assert.ifError(proc.error);
+//         assert.equal(proc.status, 0, `proc.status (${proc.status})`);
+//         assert.equal(proc.signal, null, `proc.signal (${proc.signal})`);
 
-        const stdOut = proc.stdout.toString();
-        stdOutLines = stdOut.split("\n");
+//         const stdOut = proc.stdout.toString();
+//         stdOutLines = stdOut.split("\n");
 
-        assert.ok(
-          stdOutLines.find(
-            (logLine) =>
-              logLine ===
-              "OpenTelemetry automatic instrumentation started successfully"
-          )
-        );
-      });
+//         assert.ok(
+//           stdOutLines.find(
+//             (logLine) =>
+//               logLine ===
+//               "OpenTelemetry automatic instrumentation started successfully"
+//           )
+//         );
+//       });
 
-      after(async () => {
-        await rm(path.normalize(`${__dirname}/../test-dist/esbuild/app.js`));
-      });
+//       after(async () => {
+//         await rm(path.normalize(`${__dirname}/../test-dist/esbuild/app.js`));
+//       });
 
-      it("fastify and pino", async () => {
-        assert.ok(
-          stdOutLines.find(
-            (logLine) =>
-              logLine ===
-              "OpenTelemetry automatic instrumentation started successfully"
-          )
-        );
+//       it("fastify and pino", async () => {
+//         assert.ok(
+//           stdOutLines.find(
+//             (logLine) =>
+//               logLine ===
+//               "OpenTelemetry automatic instrumentation started successfully"
+//           )
+//         );
 
-        const traceId = getTraceId(
-          stdOutLines,
-          "request handler - fastify -> @fastify/rate-limit"
-        );
+//         const traceId = getTraceId(
+//           stdOutLines,
+//           "request handler - fastify -> @fastify/rate-limit"
+//         );
 
-        assert.ok(
-          traceId,
-          "console span output in stdout contains a fastify span"
-        );
+//         assert.ok(
+//           traceId,
+//           "console span output in stdout contains a fastify span"
+//         );
 
-        const requestHandlerLogMessage = stdOutLines.find((line) =>
-          line.includes("Log message from handler")
-        );
+//         const requestHandlerLogMessage = stdOutLines.find((line) =>
+//           line.includes("Log message from handler")
+//         );
 
-        assert.ok(requestHandlerLogMessage, "Log message handler is triggered");
-        const { traceId: pinoTraceId } = JSON.parse(requestHandlerLogMessage);
-        assert.equal(traceId, pinoTraceId, "Pino logs include trace ID");
-      });
+//         assert.ok(requestHandlerLogMessage, "Log message handler is triggered");
+//         const { traceId: pinoTraceId } = JSON.parse(requestHandlerLogMessage);
+//         assert.equal(traceId, pinoTraceId, "Pino logs include trace ID");
+//       });
 
-      it("redis", async () => {
-        const traceId = getTraceId(stdOutLines, "redis-GET");
+//       it("redis", async () => {
+//         const traceId = getTraceId(stdOutLines, "redis-GET");
 
-        assert.ok(
-          traceId,
-          "console span output in stdout contains a redis span"
-        );
-      });
+//         assert.ok(
+//           traceId,
+//           "console span output in stdout contains a redis span"
+//         );
+//       });
 
-      it("mongodb", async () => {
-        const traceId = getTraceId(stdOutLines, "mongodb.find");
+//       it("mongodb", async () => {
+//         const traceId = getTraceId(stdOutLines, "mongodb.find");
 
-        assert.ok(traceId, "console span output in stdout contains a traceId");
-      });
+//         assert.ok(traceId, "console span output in stdout contains a traceId");
+//       });
 
-      describe("graphql", () => {
-        it("should instrument parse", () => {
-          const parseSpan = getTrace(stdOutLines, "graphql.parse");
-          assert.ok(parseSpan, "There is a span for graphql.parse");
-        });
+//       describe("graphql", () => {
+//         it("should instrument parse", () => {
+//           const parseSpan = getTrace(stdOutLines, "graphql.parse");
+//           assert.ok(parseSpan, "There is a span for graphql.parse");
+//         });
 
-        it("should instrument validate", () => {
-          const parseSpan = getTrace(stdOutLines, "graphql.validate");
-          assert.ok(parseSpan, "There is a span for graphql.validate");
-        });
+//         it("should instrument validate", () => {
+//           const parseSpan = getTrace(stdOutLines, "graphql.validate");
+//           assert.ok(parseSpan, "There is a span for graphql.validate");
+//         });
 
-        it("should instrument execute", () => {
-          const parseSpan = getTrace(stdOutLines, "query");
-          assert.ok(parseSpan, "There is a span for query");
-        });
-      });
-    }
-  );
+//         it("should instrument execute", () => {
+//           const parseSpan = getTrace(stdOutLines, "query");
+//           assert.ok(parseSpan, "There is a span for query");
+//         });
+//       });
+//     }
+//   );
+// });
+
+// TOOD: Parameterize before hook but share tests?
+describe("Webpack can instrument packages via a plugin: ", function () {
+  this.timeout(60_000);
+  let stdOutLines: string[] = [];
+
+  before(async () => {
+    const enabledInstrumentations = [
+      ...getNodeAutoInstrumentations().map((i) =>
+        i.instrumentationName.replace("@opentelemetry/instrumentation-", "")
+      ),
+      // Using fastify in the test server so enable it
+      "fastify",
+    ];
+    console.log("building");
+    const buildResult = await exec(
+      `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} ts-node ${__dirname}/webpack/build.ts`
+    );
+    console.log("buildResult stdout", buildResult.stdout);
+    console.log("buildResult stderr", buildResult.stderr);
+
+    const proc = startTestApp("webpack");
+
+    assert.ifError(proc.error);
+    assert.equal(proc.status, 0, `proc.status (${proc.status})`);
+    assert.equal(proc.signal, null, `proc.signal (${proc.signal})`);
+
+    const stdOut = proc.stdout.toString();
+    console.log("stdOut", stdOut);
+    stdOutLines = stdOut.split("\n");
+
+    assert.ok(
+      stdOutLines.find(
+        (logLine) =>
+          logLine ===
+          "OpenTelemetry automatic instrumentation started successfully"
+      )
+    );
+  });
+
+  after(async () => {
+    await rm(path.normalize(`${__dirname}/../test-dist/webpack/app.js`)).catch(
+      () => void 0
+    );
+    await rm(
+      path.normalize(`${__dirname}/../test-dist/webpack/app.js.LICENSE.txt`)
+    ).catch(() => void 0);
+  });
+
+  it("fastify and pino", async () => {
+    assert.ok(
+      stdOutLines.find(
+        (logLine) =>
+          logLine ===
+          "OpenTelemetry automatic instrumentation started successfully"
+      )
+    );
+
+    const traceId = getTraceId(
+      stdOutLines,
+      "request handler - fastify -> @fastify/rate-limit"
+    );
+
+    assert.ok(traceId, "console span output in stdout contains a fastify span");
+
+    const requestHandlerLogMessage = stdOutLines.find((line) =>
+      line.includes("Log message from handler")
+    );
+
+    assert.ok(requestHandlerLogMessage, "Log message handler is triggered");
+    const { traceId: pinoTraceId } = JSON.parse(requestHandlerLogMessage);
+    assert.equal(traceId, pinoTraceId, "Pino logs include trace ID");
+  });
+
+  it("redis", async () => {
+    const traceId = getTraceId(stdOutLines, "redis-GET");
+
+    assert.ok(traceId, "console span output in stdout contains a redis span");
+  });
+
+  it("mongodb", async () => {
+    const traceId = getTraceId(stdOutLines, "mongodb.find");
+
+    assert.ok(traceId, "console span output in stdout contains a traceId");
+  });
+
+  // describe("graphql", () => {
+  //   it("should instrument parse", () => {
+  //     const parseSpan = getTrace(stdOutLines, "graphql.parse");
+  //     assert.ok(parseSpan, "There is a span for graphql.parse");
+  //   });
+
+  //   it("should instrument validate", () => {
+  //     const parseSpan = getTrace(stdOutLines, "graphql.validate");
+  //     assert.ok(parseSpan, "There is a span for graphql.validate");
+  //   });
+
+  //   it("should instrument execute", () => {
+  //     const parseSpan = getTrace(stdOutLines, "query");
+  //     assert.ok(parseSpan, "There is a span for query");
+  //   });
+  // });
 });

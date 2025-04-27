@@ -1,8 +1,17 @@
 {
   "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "emitDeclarationOnly": false,
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+  },
   "files": [],
-  "include": [],
+  "include": ["test/**/*.ts"],
   "references": [
+    {
+      "path": "../../packages/opentelemetry-webpack-plugin-node"
+    },
     {
       "path": "../../packages/opentelemetry-esbuild-plugin-node"
     },
