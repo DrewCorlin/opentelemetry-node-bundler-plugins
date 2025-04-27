@@ -16,7 +16,6 @@
 
 import {
   EsbuildInstrumentationConfigMap,
-  ExtractedModule,
   OnLoadArgs,
   OpenTelemetryPluginParams,
   PluginData,
@@ -25,16 +24,19 @@ import { Plugin, PluginBuild } from "esbuild";
 import { dirname, join } from "path";
 
 import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
-import { builtinModules } from "module";
+
 import { readFile } from "fs/promises";
 import { satisfies } from "semver";
-import { wrapModule } from "./common";
+
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { getOtelPackageToInstrumentationConfig } from "./config";
-
-const NODE_MODULES = "node_modules/";
-
-const BUILT_INS = new Set(builtinModules.flatMap((b) => [b, `node:${b}`]));
+import {
+  ExtractedModule,
+  extractPackageAndModulePath,
+  isBuiltIn,
+  shouldIgnoreModule,
+  wrapModule,
+} from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 
 function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
   if (!pluginConfig) return;
@@ -62,8 +64,8 @@ export function openTelemetryPlugin(
     setup(build) {
       build.onResolve({ filter: /.*/ }, async (args) => {
         if (
+          args.namespace !== "file" ||
           shouldIgnoreModule({
-            namespace: args.namespace,
             path: args.path,
             importer: args.importer,
             externalModules: pluginConfig?.externalModules,
@@ -179,82 +181,6 @@ function getPackageConfig({
     return matchingPlugin.getConfig();
   }
   return pluginConfig.instrumentationConfig?.[oTelInstrumentationPackage];
-}
-
-/**
- * For a given full path to a module,
- *   return the package name it belongs to and the local path to the module
- *   input: '/foo/node_modules/@co/stuff/foo/bar/baz.js'
- *   output: { package: '@co/stuff', path: 'foo/bar/baz.js' }
- */
-function extractPackageAndModulePath(
-  originalPath: string,
-  resolveDir: string
-): { path: string; extractedModule: ExtractedModule | null } {
-  // @see https://github.com/nodejs/node/issues/47000
-  const path = require.resolve(
-    originalPath === "." ? "./" : originalPath === ".." ? "../" : originalPath,
-    { paths: [resolveDir] }
-  );
-
-  const nodeModulesIndex = path.lastIndexOf(NODE_MODULES);
-  if (nodeModulesIndex < 0) return { path, extractedModule: null };
-
-  const subPath = path.substring(nodeModulesIndex + NODE_MODULES.length);
-  const firstSlashIndex = subPath.indexOf("/");
-
-  if (!subPath.startsWith("@")) {
-    return {
-      path,
-      extractedModule: {
-        package: subPath.substring(0, firstSlashIndex),
-        path: subPath.substring(firstSlashIndex + 1),
-      },
-    };
-  }
-
-  const secondSlash = subPath.substring(firstSlashIndex + 1).indexOf("/");
-  return {
-    path,
-    extractedModule: {
-      package: subPath.substring(0, firstSlashIndex + secondSlash + 1),
-      path: subPath.substring(firstSlashIndex + secondSlash + 2),
-    },
-  };
-}
-
-function shouldIgnoreModule({
-  namespace,
-  path,
-  importer,
-  externalModules,
-  pathPrefixesToIgnore,
-}: {
-  namespace: string;
-  path: string;
-  importer: string;
-  externalModules?: string[];
-  pathPrefixesToIgnore?: string[];
-}): boolean {
-  // If onLoad is being triggered from another plugin, ignore it
-  if (namespace !== "file") return true;
-  // If it's a local import from our code, ignore it
-  if (!importer.includes(NODE_MODULES) && path.startsWith(".")) return true;
-  // If it starts with a prefix to ignore, ignore it
-  if (pathPrefixesToIgnore?.some((prefix) => path.startsWith(prefix))) {
-    return true;
-  }
-  // If it's marked as external, ignore it
-  if (externalModules?.includes(path)) return true;
-
-  return false;
-}
-
-function isBuiltIn(path: string, extractedModule: ExtractedModule): boolean {
-  return (
-    BUILT_INS.has(path) ||
-    BUILT_INS.has(`${extractedModule.package}/${extractedModule.path}`)
-  );
 }
 
 const moduleVersionByPackageJsonPath = new Map<string, string>();

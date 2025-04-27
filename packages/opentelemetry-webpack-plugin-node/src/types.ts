@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
+import { ExtractedModule } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 import type { InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node";
 import { Instrumentation } from "@opentelemetry/instrumentation";
-
-export interface ExtractedModule {
-  package: string;
-  path: string;
-}
 
 export type PluginData = {
   extractedModule: ExtractedModule;
@@ -28,15 +24,6 @@ export type PluginData = {
   moduleVersion: string;
   instrumentationName: string;
 };
-
-export interface ModuleParams {
-  path?: string;
-  oTelInstrumentationPackage: string;
-  oTelInstrumentationClass: string;
-  oTelInstrumentationConstructorArgs?: string;
-  instrumentationName?: string;
-  moduleVersion: string;
-}
 
 type _RemoveFunctions<T> = {
   [P in keyof T as T[P] extends (...args: unknown[]) => unknown

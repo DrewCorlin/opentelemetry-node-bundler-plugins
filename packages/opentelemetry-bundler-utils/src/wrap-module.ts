@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import type { ModuleParams } from './types';
+interface ModuleParams {
+  path?: string;
+  oTelInstrumentationPackage: string;
+  oTelInstrumentationClass: string;
+  oTelInstrumentationConstructorArgs?: string;
+  instrumentationName?: string;
+  moduleVersion: string;
+}
 
 export function wrapModule(
   originalSource: string,
@@ -24,7 +31,7 @@ export function wrapModule(
     oTelInstrumentationPackage,
     oTelInstrumentationClass,
     instrumentationName,
-    oTelInstrumentationConstructorArgs = '',
+    oTelInstrumentationConstructorArgs = "",
   }: ModuleParams
 ) {
   return `

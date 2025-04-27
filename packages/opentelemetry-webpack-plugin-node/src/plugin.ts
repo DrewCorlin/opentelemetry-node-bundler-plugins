@@ -1,19 +1,25 @@
 import { readFile } from "fs/promises";
 import path from "path";
-import { builtinModules } from "module";
+
 import { satisfies } from "semver";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import { getOtelPackageToInstrumentationConfig } from "./config";
-import { wrapModule } from "./common";
+
 import {
   EsbuildInstrumentationConfigMap,
-  ExtractedModule,
   OpenTelemetryPluginParams,
 } from "./types";
 import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
 import { Compiler, NormalModule } from "webpack";
 import { writeFileSync } from "fs";
 import os from "os";
+import {
+  ExtractedModule,
+  extractPackageAndModulePath,
+  isBuiltIn,
+  shouldIgnoreModule,
+  wrapModule,
+} from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 
 const tempLoaderPath = path.join(os.tmpdir(), "otel-string-replace-loader.js");
 
@@ -44,9 +50,6 @@ if (!require.cache[tempLoaderPath]) {
     `
   );
 }
-
-const NODE_MODULES = "node_modules/";
-const BUILT_INS = new Set(builtinModules.flatMap((b) => [b, `node:${b}`]));
 
 export class OpenTelemetryWebpackPlugin {
   private pluginConfig?: OpenTelemetryPluginParams;
@@ -246,82 +249,6 @@ function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
       "OpenTelemetryPluginParams and instrumentations must not be used together"
     );
   }
-}
-/**
- * For a given full path to a module,
- *   return the package name it belongs to and the local path to the module
- *   input: '/foo/node_modules/@co/stuff/foo/bar/baz.js'
- *   output: { package: '@co/stuff', path: 'foo/bar/baz.js' }
- */
-function extractPackageAndModulePath(
-  originalPath: string,
-  resolveDir: string
-): { path: string; extractedModule: ExtractedModule | null } {
-  // @see https://github.com/nodejs/node/issues/47000
-  const path = require.resolve(
-    originalPath === "." ? "./" : originalPath === ".." ? "../" : originalPath,
-    { paths: [resolveDir] }
-  );
-
-  const nodeModulesIndex = path.lastIndexOf(NODE_MODULES);
-  if (nodeModulesIndex < 0) return { path, extractedModule: null };
-
-  const subPath = path.substring(nodeModulesIndex + NODE_MODULES.length);
-  const firstSlashIndex = subPath.indexOf("/");
-
-  if (!subPath.startsWith("@")) {
-    return {
-      path,
-      extractedModule: {
-        package: subPath.substring(0, firstSlashIndex),
-        path: subPath.substring(firstSlashIndex + 1),
-      },
-    };
-  }
-
-  const secondSlash = subPath.substring(firstSlashIndex + 1).indexOf("/");
-  return {
-    path,
-    extractedModule: {
-      package: subPath.substring(0, firstSlashIndex + secondSlash + 1),
-      path: subPath.substring(firstSlashIndex + secondSlash + 2),
-    },
-  };
-}
-
-function shouldIgnoreModule({
-  // TODO: Is this fine or does this concept carry over?
-  // namespace,
-  path,
-  importer,
-  externalModules,
-  pathPrefixesToIgnore,
-}: {
-  // namespace: string;
-  path: string;
-  importer: string;
-  externalModules?: string[];
-  pathPrefixesToIgnore?: string[];
-}): boolean {
-  // // If onLoad is being triggered from another plugin, ignore it
-  // if (namespace !== "file") return true;
-  // If it's a local import from our code, ignore it
-  if (!importer.includes(NODE_MODULES) && path.startsWith(".")) return true;
-  // If it starts with a prefix to ignore, ignore it
-  if (pathPrefixesToIgnore?.some((prefix) => path.startsWith(prefix))) {
-    return true;
-  }
-  // If it's marked as external, ignore it
-  if (externalModules?.includes(path)) return true;
-
-  return false;
-}
-
-function isBuiltIn(path: string, extractedModule: ExtractedModule): boolean {
-  return (
-    BUILT_INS.has(path) ||
-    BUILT_INS.has(`${extractedModule.package}/${extractedModule.path}`)
-  );
 }
 
 function getInstrumentation({

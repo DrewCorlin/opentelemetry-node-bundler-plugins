@@ -14,14 +14,10 @@
  * limitations under the License.
  */
 
-import type { OnLoadArgs as EsbuildOnLoadArgs } from 'esbuild';
-import type { InstrumentationConfigMap } from '@opentelemetry/auto-instrumentations-node';
-import { Instrumentation } from '@opentelemetry/instrumentation';
-
-export interface ExtractedModule {
-  package: string;
-  path: string;
-}
+import type { OnLoadArgs as EsbuildOnLoadArgs } from "esbuild";
+import type { InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node";
+import { Instrumentation } from "@opentelemetry/instrumentation";
+import { ExtractedModule } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 
 export type PluginData = {
   extractedModule: ExtractedModule;
@@ -30,18 +26,9 @@ export type PluginData = {
   instrumentationName: string;
 };
 
-export type OnLoadArgs = Omit<EsbuildOnLoadArgs, 'pluginData'> & {
+export type OnLoadArgs = Omit<EsbuildOnLoadArgs, "pluginData"> & {
   pluginData?: PluginData;
 };
-
-export interface ModuleParams {
-  path?: string;
-  oTelInstrumentationPackage: string;
-  oTelInstrumentationClass: string;
-  oTelInstrumentationConstructorArgs?: string;
-  instrumentationName?: string;
-  moduleVersion: string;
-}
 
 type _RemoveFunctions<T> = {
   [P in keyof T as T[P] extends (...args: unknown[]) => unknown
@@ -53,9 +40,9 @@ type _RemoveFunctions<T> = {
 export type RemoveFunctions<T> = Partial<_RemoveFunctions<Required<T>>>;
 
 type BuiltinPackages =
-  | '@opentelemetry/instrumentation-dns'
-  | '@opentelemetry/instrumentation-fs'
-  | '@opentelemetry/instrumentation-http';
+  | "@opentelemetry/instrumentation-dns"
+  | "@opentelemetry/instrumentation-fs"
+  | "@opentelemetry/instrumentation-http";
 
 type NonBuiltinInstrumentationConfigMap = Omit<
   InstrumentationConfigMap,
