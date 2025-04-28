@@ -24,6 +24,7 @@ type _RemoveFunctions<T> = {
 // _RemoveFunctions does not work on optional fields, so first make the type required then apply Partial to the result
 type RemoveFunctions<T> = Partial<_RemoveFunctions<Required<T>>>;
 
+// TODO: Do we need this or should it just all be strings (assuming people will bring their own plugins, not just use one from auto-instrumentations-node)
 export type OtelPluginInstrumentationConfigMap = {
   [K in keyof NonBuiltinInstrumentationConfigMap]: RemoveFunctions<
     NonBuiltinInstrumentationConfigMap[K]

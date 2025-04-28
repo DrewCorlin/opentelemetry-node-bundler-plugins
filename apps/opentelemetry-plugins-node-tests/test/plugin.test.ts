@@ -75,9 +75,8 @@ function getTrace(stdOutLines: string[], spanName: string) {
 }
 
 [
-  { scriptFile: "build.ts", bundler: "esbuild", distFiles: ["app.js"] },
   {
-    scriptFile: "build-manual-instrumentations.ts",
+    scriptFile: "build.ts",
     bundler: "esbuild",
     distFiles: ["app.js"],
   },

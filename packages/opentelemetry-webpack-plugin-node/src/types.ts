@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-import { OtelPluginInstrumentationConfigMap } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 import { Instrumentation } from "@opentelemetry/instrumentation";
 
 export type PluginData = {
@@ -27,13 +26,6 @@ export type PluginData = {
 };
 
 export interface OpenTelemetryPluginParams {
-  /**
-   * Allow configuring instrumentations loaded from getNodeAutoInstrumentations (from @opentelemetry/auto-instrumentations-node).
-   *
-   * @deprecated Use `instrumentations` instead and pass in already configured instrumentations
-   */
-  instrumentationConfig?: OtelPluginInstrumentationConfigMap;
-
   /** Modules to consider external and ignore from the plugin */
   externalModules?: string[];
 
@@ -47,9 +39,6 @@ export interface OpenTelemetryPluginParams {
 
   /**
    * Instrumentations to apply
-   * Defaults to `getNodeAutoInstrumentations()` from `@opentelemetry/auto-instrumentations-node`.
-   * NB: getNodeAutoInstrumentations() can change what it returns (and what is enabled by default) version to version
-   * so as this plugin updates dependencies that may change, if you are not manually configuring instrumentations.
    *
    * NB: Not all config options for each instrumentation will be respected. Notably, functions will be ignored
    * as this plugin requires serializing the configs as JSON during bundling which are then read at runtime.
@@ -82,5 +71,5 @@ export interface OpenTelemetryPluginParams {
    * })
    * ```
    */
-  instrumentations?: Instrumentation[];
+  instrumentations: Instrumentation[];
 }

@@ -1,8 +1,6 @@
 import { readFile } from "fs/promises";
 import path from "path";
 
-import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-
 import { OpenTelemetryPluginParams, PluginData } from "./types";
 import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
 import { Compiler, NormalModule } from "webpack";
@@ -49,7 +47,7 @@ if (!require.cache[tempLoaderPath]) {
 }
 
 export class OpenTelemetryWebpackPlugin {
-  private pluginConfig?: OpenTelemetryPluginParams;
+  private pluginConfig: OpenTelemetryPluginParams;
   // TODO: Commonize type with esbuild's src/config/main.ts otelPackageToInstrumentationConfig
   private otelPackageToInstrumentationConfig: Record<
     string,
@@ -64,16 +62,13 @@ export class OpenTelemetryWebpackPlugin {
   private instrumentationModuleDefinitions: InstrumentationModuleDefinition[];
   private moduleVersionByPackageJsonPath: Map<string, string>;
 
-  constructor(pluginConfig?: OpenTelemetryPluginParams) {
+  constructor(pluginConfig: OpenTelemetryPluginParams) {
     this.pluginConfig = pluginConfig;
-    validateConfig(pluginConfig);
 
     const {
       otelPackageToInstrumentationConfig,
       instrumentationModuleDefinitions,
-    } = getOtelPackageToInstrumentationConfig(
-      pluginConfig?.instrumentations ?? getNodeAutoInstrumentations()
-    );
+    } = getOtelPackageToInstrumentationConfig(pluginConfig.instrumentations);
 
     this.otelPackageToInstrumentationConfig =
       otelPackageToInstrumentationConfig;
@@ -237,21 +232,11 @@ export class OpenTelemetryWebpackPlugin {
       }
       return matching.getConfig();
     }
-    return this.pluginConfig.instrumentationConfig?.[
-      oTelInstrumentationPackage
-    ];
+    // TODO: Is this right?
+    throw new Error(`No config found for ${oTelInstrumentationPackage}`);
   }
 }
 
 function normalizeMjsToJs(filename: string) {
   return filename.replace(/(.mjs)$/, ".js");
-}
-
-function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
-  if (!pluginConfig) return;
-  if (pluginConfig.instrumentationConfig && pluginConfig.instrumentations) {
-    throw new Error(
-      "OpenTelemetryPluginParams and instrumentations must not be used together"
-    );
-  }
 }

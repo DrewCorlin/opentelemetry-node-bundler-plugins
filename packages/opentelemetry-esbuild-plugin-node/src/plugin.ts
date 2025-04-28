@@ -20,8 +20,6 @@ import { dirname, join } from "path";
 
 import { readFile } from "fs/promises";
 
-import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-
 import {
   ExtractedModule,
   extractPackageAndModulePath,
@@ -33,26 +31,13 @@ import {
   wrapModule,
 } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 
-function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
-  if (!pluginConfig) return;
-  if (pluginConfig.instrumentationConfig && pluginConfig.instrumentations) {
-    throw new Error(
-      "OpenTelemetryPluginParams and instrumentations must not be used together"
-    );
-  }
-}
-
 export function openTelemetryPlugin(
-  pluginConfig?: OpenTelemetryPluginParams
+  pluginConfig: OpenTelemetryPluginParams
 ): Plugin {
-  validateConfig(pluginConfig);
-
   const {
     otelPackageToInstrumentationConfig,
     instrumentationModuleDefinitions,
-  } = getOtelPackageToInstrumentationConfig(
-    pluginConfig?.instrumentations ?? getNodeAutoInstrumentations()
-  );
+  } = getOtelPackageToInstrumentationConfig(pluginConfig.instrumentations);
 
   return {
     name: "open-telemetry",
@@ -63,8 +48,8 @@ export function openTelemetryPlugin(
           shouldIgnoreModule({
             path: args.path,
             importer: args.importer,
-            externalModules: pluginConfig?.externalModules,
-            pathPrefixesToIgnore: pluginConfig?.pathPrefixesToIgnore,
+            externalModules: pluginConfig.externalModules,
+            pathPrefixesToIgnore: pluginConfig.pathPrefixesToIgnore,
           })
         ) {
           return;
@@ -175,7 +160,8 @@ function getPackageConfig({
     }
     return matchingPlugin.getConfig();
   }
-  return pluginConfig.instrumentationConfig?.[oTelInstrumentationPackage];
+  // TODO: Is this right?
+  throw new Error(`No config found for ${oTelInstrumentationPackage}`);
 }
 
 const moduleVersionByPackageJsonPath = new Map<string, string>();

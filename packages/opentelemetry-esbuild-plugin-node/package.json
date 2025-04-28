@@ -22,7 +22,6 @@
     "typescript": "5.8.3"
   },
   "dependencies": {
-    "@opentelemetry/auto-instrumentations-node": "^0.58.0",
     "@opentelemetry/instrumentation": "^0.200.0",
     "tslib": "^2.3.0",
     "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils": "0.0.1"
