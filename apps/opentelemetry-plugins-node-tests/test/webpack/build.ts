@@ -19,6 +19,7 @@ webpack(
           terserOptions: {
             // The redis client instrumentation relies on a class name. Not specifically releavant
             // to this plugin, but that instrumentation package is a good test case
+            // TODO: Document this
             keep_classnames: true,
           },
         }),

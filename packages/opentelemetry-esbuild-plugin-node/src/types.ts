@@ -15,9 +15,12 @@
  */
 
 import type { OnLoadArgs as EsbuildOnLoadArgs } from "esbuild";
-import type { InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node";
+
 import { Instrumentation } from "@opentelemetry/instrumentation";
-import { ExtractedModule } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
+import {
+  ExtractedModule,
+  OtelPluginInstrumentationConfigMap,
+} from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 
 export type PluginData = {
   extractedModule: ExtractedModule;
@@ -30,38 +33,13 @@ export type OnLoadArgs = Omit<EsbuildOnLoadArgs, "pluginData"> & {
   pluginData?: PluginData;
 };
 
-type _RemoveFunctions<T> = {
-  [P in keyof T as T[P] extends (...args: unknown[]) => unknown
-    ? never
-    : P]: T[P];
-};
-
-// _RemoveFunctions does not work on optional fields, so first make the type required then apply Partial to the result
-export type RemoveFunctions<T> = Partial<_RemoveFunctions<Required<T>>>;
-
-type BuiltinPackages =
-  | "@opentelemetry/instrumentation-dns"
-  | "@opentelemetry/instrumentation-fs"
-  | "@opentelemetry/instrumentation-http";
-
-type NonBuiltinInstrumentationConfigMap = Omit<
-  InstrumentationConfigMap,
-  BuiltinPackages
->;
-
-export type EsbuildInstrumentationConfigMap = {
-  [K in keyof NonBuiltinInstrumentationConfigMap]: RemoveFunctions<
-    NonBuiltinInstrumentationConfigMap[K]
-  >;
-};
-
 export interface OpenTelemetryPluginParams {
   /**
    * Allow configuring instrumentations loaded from getNodeAutoInstrumentations (from @opentelemetry/auto-instrumentations-node).
    *
    * @deprecated Use `instrumentations` instead and pass in already configured instrumentations
    */
-  instrumentationConfig?: EsbuildInstrumentationConfigMap;
+  instrumentationConfig?: OtelPluginInstrumentationConfigMap;
 
   /** Modules to consider external and ignore from the plugin */
   externalModules?: string[];

@@ -14,6 +14,12 @@
     }
   },
   "dependencies": {
+    "@opentelemetry/auto-instrumentations-node": "^0.58.0",
+    "@opentelemetry/instrumentation": "^0.200.0",
+    "semver": "^7.7.1",
     "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/semver": "^7.7.0"
   }
 }

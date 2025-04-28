@@ -1,22 +1,19 @@
 import { readFile } from "fs/promises";
 import path from "path";
 
-import { satisfies } from "semver";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import { getOtelPackageToInstrumentationConfig } from "./config";
 
-import {
-  EsbuildInstrumentationConfigMap,
-  OpenTelemetryPluginParams,
-} from "./types";
+import { OpenTelemetryPluginParams, PluginData } from "./types";
 import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
 import { Compiler, NormalModule } from "webpack";
 import { writeFileSync } from "fs";
 import os from "os";
 import {
-  ExtractedModule,
   extractPackageAndModulePath,
+  getInstrumentation,
+  getOtelPackageToInstrumentationConfig,
   isBuiltIn,
+  OtelPluginInstrumentationConfigMap,
   shouldIgnoreModule,
   wrapModule,
 } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
@@ -57,7 +54,7 @@ export class OpenTelemetryWebpackPlugin {
   private otelPackageToInstrumentationConfig: Record<
     string,
     {
-      oTelInstrumentationPackage: keyof EsbuildInstrumentationConfigMap;
+      oTelInstrumentationPackage: keyof OtelPluginInstrumentationConfigMap;
       oTelInstrumentationClass: string;
       configGenerator: <T extends { enabled?: boolean }>(
         config?: T
@@ -123,9 +120,12 @@ export class OpenTelemetryWebpackPlugin {
             const matchingInstrumentation = getInstrumentation({
               instrumentationModuleDefinitions:
                 this.instrumentationModuleDefinitions,
-              extractedModule,
+              extractedModule: {
+                package: extractedModule.package,
+                path: normalizeMjsToJs(extractedModule.path),
+              },
               moduleVersion,
-              path: request,
+              path: normalizeMjsToJs(request),
             });
             if (!matchingInstrumentation) return undefined;
 
@@ -141,8 +141,7 @@ export class OpenTelemetryWebpackPlugin {
             if (!resolveData.createData.resourceResolveData)
               resolveData.createData.resourceResolveData = {};
 
-            // TODO: Type this
-            resolveData.createData.resourceResolveData.__otelPluginData = {
+            const pluginData: PluginData = {
               path: path.join(
                 extractedModule.package || "",
                 extractedModule.path || ""
@@ -154,6 +153,8 @@ export class OpenTelemetryWebpackPlugin {
               oTelInstrumentationConstructorArgs:
                 config.configGenerator(packageConfig),
             };
+            resolveData.createData.resourceResolveData.__otelPluginData =
+              pluginData;
           }
         );
       }
@@ -165,16 +166,16 @@ export class OpenTelemetryWebpackPlugin {
         NormalModule.getCompilationHooks(compilation).loader.tap(
           "OpenTelemetryWebpackPlugin",
           (_, normalModule) => {
-            if (normalModule.resourceResolveData.__otelPluginData) {
+            const pluginData: PluginData =
+              normalModule.resourceResolveData.__otelPluginData;
+
+            if (pluginData) {
               // TODO: our wrapModule function assumes CJS. Document need for loader to transpile
               normalModule.loaders.unshift({
                 loader: tempLoaderPath,
                 options: {
-                  ...normalModule.resourceResolveData.__otelPluginData,
-                  path: normalModule.resourceResolveData.__otelPluginData.path.replace(
-                    ".mjs",
-                    ".js"
-                  ),
+                  ...pluginData,
+                  path: normalizeMjsToJs(pluginData.path),
                   wrapModule,
                 },
                 ident: "OpenTelemetryWebpackPlugin",
@@ -222,7 +223,7 @@ export class OpenTelemetryWebpackPlugin {
   }
 
   getPackageConfig(
-    oTelInstrumentationPackage: keyof EsbuildInstrumentationConfigMap
+    oTelInstrumentationPackage: keyof OtelPluginInstrumentationConfigMap
   ) {
     if (!this.pluginConfig) return;
     if (this.pluginConfig.instrumentations) {
@@ -242,6 +243,10 @@ export class OpenTelemetryWebpackPlugin {
   }
 }
 
+function normalizeMjsToJs(filename: string) {
+  return filename.replace(/(.mjs)$/, ".js");
+}
+
 function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
   if (!pluginConfig) return;
   if (pluginConfig.instrumentationConfig && pluginConfig.instrumentations) {
@@ -249,51 +254,4 @@ function validateConfig(pluginConfig?: OpenTelemetryPluginParams) {
       "OpenTelemetryPluginParams and instrumentations must not be used together"
     );
   }
-}
-
-function getInstrumentation({
-  instrumentationModuleDefinitions,
-  extractedModule,
-  path,
-  moduleVersion,
-}: {
-  instrumentationModuleDefinitions: InstrumentationModuleDefinition[];
-  extractedModule: ExtractedModule;
-  path: string;
-  moduleVersion: string;
-}): InstrumentationModuleDefinition | null {
-  for (const def of instrumentationModuleDefinitions) {
-    const fullModulePath = `${extractedModule.package}/${extractedModule.path}`;
-    const nameMatches = def.name === path || def.name === fullModulePath;
-
-    if (!nameMatches) {
-      const fileMatch = def.files.find((f) => {
-        if (f.name === path || f.name === fullModulePath) return true;
-        if (
-          // TODO: clean this up in some way
-          f.name === path.replace(".mjs", ".js") ||
-          f.name === fullModulePath.replace(".mjs", ".js")
-        )
-          return true;
-        return false;
-      });
-      if (!fileMatch) continue;
-    }
-
-    if (def.supportedVersions.some((ver) => satisfies(moduleVersion, ver))) {
-      return def;
-    }
-
-    if (
-      def.files.some(
-        (f) =>
-          (f.name === path || f.name === fullModulePath) &&
-          f.supportedVersions.some((ver) => satisfies(moduleVersion, ver))
-      )
-    ) {
-      return def;
-    }
-  }
-
-  return null;
 }

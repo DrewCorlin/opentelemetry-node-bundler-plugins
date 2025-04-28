@@ -18,9 +18,8 @@ import {
   Instrumentation,
   InstrumentationBase,
   InstrumentationModuleDefinition,
-} from '@opentelemetry/instrumentation';
-
-import { EsbuildInstrumentationConfigMap } from '../types';
+} from "@opentelemetry/instrumentation";
+import { OtelPluginInstrumentationConfigMap } from "./types";
 
 function getModuleDefinitions(
   instrumentation: Instrumentation
@@ -38,7 +37,7 @@ function configGenerator<T extends { enabled?: boolean }>(
   if (!config) return;
   return JSON.stringify(
     Object.fromEntries(
-      Object.entries(config).filter(([, v]) => typeof v !== 'function')
+      Object.entries(config).filter(([, v]) => typeof v !== "function")
     )
   );
 }
@@ -48,7 +47,7 @@ export function getOtelPackageToInstrumentationConfig(
 ) {
   const instrumentationModuleDefinitionsByInstrumentationName =
     Object.fromEntries(
-      instrumentations.map(i => [
+      instrumentations.map((i) => [
         i.instrumentationName,
         getModuleDefinitions(i),
       ])
@@ -61,7 +60,7 @@ export function getOtelPackageToInstrumentationConfig(
   const otelPackageToInstrumentationConfig: Record<
     string,
     {
-      oTelInstrumentationPackage: keyof EsbuildInstrumentationConfigMap;
+      oTelInstrumentationPackage: keyof OtelPluginInstrumentationConfigMap;
       oTelInstrumentationClass: string;
       configGenerator: <T extends { enabled?: boolean }>(
         config?: T
@@ -78,7 +77,7 @@ export function getOtelPackageToInstrumentationConfig(
       otelPackageToInstrumentationConfig[instrumentationModuleDefinition.name] =
         {
           oTelInstrumentationPackage:
-            instrumentation.instrumentationName as keyof EsbuildInstrumentationConfigMap,
+            instrumentation.instrumentationName as keyof OtelPluginInstrumentationConfigMap,
           oTelInstrumentationClass: instrumentation.constructor.name,
           configGenerator,
         };

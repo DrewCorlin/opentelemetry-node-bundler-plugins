@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-import {
-  EsbuildInstrumentationConfigMap,
-  OnLoadArgs,
-  OpenTelemetryPluginParams,
-  PluginData,
-} from "./types";
+import { OnLoadArgs, OpenTelemetryPluginParams, PluginData } from "./types";
 import { Plugin, PluginBuild } from "esbuild";
 import { dirname, join } from "path";
 
-import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
-
 import { readFile } from "fs/promises";
-import { satisfies } from "semver";
 
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import { getOtelPackageToInstrumentationConfig } from "./config";
+
 import {
   ExtractedModule,
   extractPackageAndModulePath,
+  getInstrumentation,
+  getOtelPackageToInstrumentationConfig,
   isBuiltIn,
+  OtelPluginInstrumentationConfigMap,
   shouldIgnoreModule,
   wrapModule,
 } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
@@ -166,7 +161,7 @@ function getPackageConfig({
   oTelInstrumentationPackage,
 }: {
   pluginConfig?: OpenTelemetryPluginParams;
-  oTelInstrumentationPackage: keyof EsbuildInstrumentationConfigMap;
+  oTelInstrumentationPackage: keyof OtelPluginInstrumentationConfigMap;
 }) {
   if (!pluginConfig) return;
   if (pluginConfig.instrumentations) {
@@ -208,50 +203,4 @@ async function getModuleVersion({
   const moduleVersion = JSON.parse(packageJsonContents.toString()).version;
   moduleVersionByPackageJsonPath.set(path, moduleVersion);
   return moduleVersion;
-}
-
-function getInstrumentation({
-  instrumentationModuleDefinitions,
-  extractedModule,
-  path,
-  moduleVersion,
-}: {
-  instrumentationModuleDefinitions: InstrumentationModuleDefinition[];
-  extractedModule: ExtractedModule;
-  path: string;
-  moduleVersion: string;
-}): InstrumentationModuleDefinition | null {
-  for (const instrumentationModuleDefinition of instrumentationModuleDefinitions) {
-    const fullModulePath = `${extractedModule.package}/${extractedModule.path}`;
-    const nameMatches =
-      instrumentationModuleDefinition.name === path ||
-      instrumentationModuleDefinition.name === fullModulePath;
-
-    if (!nameMatches) {
-      const fileMatch = instrumentationModuleDefinition.files.find((file) => {
-        return file.name === path || file.name === fullModulePath;
-      });
-      if (!fileMatch) continue;
-    }
-
-    if (
-      instrumentationModuleDefinition.supportedVersions.some(
-        (supportedVersion) => satisfies(moduleVersion, supportedVersion)
-      )
-    ) {
-      return instrumentationModuleDefinition;
-    }
-
-    if (
-      instrumentationModuleDefinition.files.some((file) => {
-        if (file.name !== path && file.name !== fullModulePath) return false;
-        return file.supportedVersions.some((supportedVersion) =>
-          satisfies(moduleVersion, supportedVersion)
-        );
-      })
-    ) {
-      return instrumentationModuleDefinition;
-    }
-  }
-  return null;
 }

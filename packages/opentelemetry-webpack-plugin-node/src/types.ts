@@ -14,41 +14,16 @@
  * limitations under the License.
  */
 
-import { ExtractedModule } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
-import type { InstrumentationConfigMap } from "@opentelemetry/auto-instrumentations-node";
+import { OtelPluginInstrumentationConfigMap } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
 import { Instrumentation } from "@opentelemetry/instrumentation";
 
 export type PluginData = {
-  extractedModule: ExtractedModule;
-  shouldPatchPackage: boolean;
+  path: string;
   moduleVersion: string;
   instrumentationName: string;
-};
-
-type _RemoveFunctions<T> = {
-  [P in keyof T as T[P] extends (...args: unknown[]) => unknown
-    ? never
-    : P]: T[P];
-};
-
-// _RemoveFunctions does not work on optional fields, so first make the type required then apply Partial to the result
-export type RemoveFunctions<T> = Partial<_RemoveFunctions<Required<T>>>;
-
-type BuiltinPackages =
-  | "@opentelemetry/instrumentation-dns"
-  | "@opentelemetry/instrumentation-fs"
-  | "@opentelemetry/instrumentation-http";
-
-type NonBuiltinInstrumentationConfigMap = Omit<
-  InstrumentationConfigMap,
-  BuiltinPackages
->;
-
-// TODO: Rename to not esbuild
-export type EsbuildInstrumentationConfigMap = {
-  [K in keyof NonBuiltinInstrumentationConfigMap]: RemoveFunctions<
-    NonBuiltinInstrumentationConfigMap[K]
-  >;
+  oTelInstrumentationClass: string;
+  oTelInstrumentationPackage: string;
+  oTelInstrumentationConstructorArgs: string | undefined;
 };
 
 export interface OpenTelemetryPluginParams {
@@ -57,7 +32,7 @@ export interface OpenTelemetryPluginParams {
    *
    * @deprecated Use `instrumentations` instead and pass in already configured instrumentations
    */
-  instrumentationConfig?: EsbuildInstrumentationConfigMap;
+  instrumentationConfig?: OtelPluginInstrumentationConfigMap;
 
   /** Modules to consider external and ignore from the plugin */
   externalModules?: string[];
