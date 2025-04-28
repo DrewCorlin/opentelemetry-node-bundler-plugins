@@ -4,6 +4,7 @@ export * from "./get-instrumentation";
 export * from "./should-ignore-module";
 export * from "./util";
 export * from "./wrap-module";
+export * from "./get-package-config";
 export type {
   ExtractedModule,
   OtelPluginInstrumentationConfigMap,

@@ -10,6 +10,7 @@ import {
   extractPackageAndModulePath,
   getInstrumentation,
   getOtelPackageToInstrumentationConfig,
+  getPackageConfig,
   isBuiltIn,
   OpenTelemetryPluginParams,
   OtelPluginInstrumentationConfigMap,
@@ -118,10 +119,10 @@ export class OpenTelemetryWebpackPlugin {
                 this.instrumentationModuleDefinitions,
               extractedModule: {
                 package: extractedModule.package,
-                path: normalizeMjsToJs(extractedModule.path),
+                path: this.normalizeMjsToJs(extractedModule.path),
               },
               moduleVersion,
-              path: normalizeMjsToJs(request),
+              path: this.normalizeMjsToJs(request),
             });
             if (!matchingInstrumentation) return undefined;
 
@@ -130,9 +131,10 @@ export class OpenTelemetryWebpackPlugin {
               this.otelPackageToInstrumentationConfig[instrumentationName];
             if (!config) return undefined;
 
-            const packageConfig = this.getPackageConfig(
-              config.oTelInstrumentationPackage
-            );
+            const packageConfig = getPackageConfig({
+              pluginConfig: this.pluginConfig,
+              oTelInstrumentationPackage: config.oTelInstrumentationPackage,
+            });
 
             if (!resolveData.createData.resourceResolveData)
               resolveData.createData.resourceResolveData = {};
@@ -171,7 +173,7 @@ export class OpenTelemetryWebpackPlugin {
                 loader: tempLoaderPath,
                 options: {
                   ...pluginData,
-                  path: normalizeMjsToJs(pluginData.path),
+                  path: this.normalizeMjsToJs(pluginData.path),
                   wrapModule,
                 },
                 ident: "OpenTelemetryWebpackPlugin",
@@ -184,7 +186,7 @@ export class OpenTelemetryWebpackPlugin {
     );
   }
 
-  getModuleVersion(
+  private getModuleVersion(
     extractedModule: {
       package: string;
       path: string;
@@ -218,26 +220,7 @@ export class OpenTelemetryWebpackPlugin {
     });
   }
 
-  getPackageConfig(
-    oTelInstrumentationPackage: keyof OtelPluginInstrumentationConfigMap
-  ) {
-    if (!this.pluginConfig) return;
-    if (this.pluginConfig.instrumentations) {
-      const matching = this.pluginConfig.instrumentations.find(
-        (i) => i.instrumentationName === oTelInstrumentationPackage
-      );
-      if (!matching) {
-        throw new Error(
-          `Instrumentation ${oTelInstrumentationPackage} not found`
-        );
-      }
-      return matching.getConfig();
-    }
-    // TODO: Is this right?
-    throw new Error(`No config found for ${oTelInstrumentationPackage}`);
+  private normalizeMjsToJs(filename: string) {
+    return filename.replace(/(.mjs)$/, ".js");
   }
-}
-
-function normalizeMjsToJs(filename: string) {
-  return filename.replace(/(.mjs)$/, ".js");
 }
