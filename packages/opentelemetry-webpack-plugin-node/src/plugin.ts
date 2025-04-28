@@ -53,7 +53,6 @@ if (!require.cache[tempLoaderPath]) {
 
 export class OpenTelemetryWebpackPlugin {
   private pluginConfig: OpenTelemetryPluginParams;
-  // TODO: Commonize type with esbuild's src/config/main.ts otelPackageToInstrumentationConfig
   private otelPackageToInstrumentationConfig: Record<
     string,
     {
