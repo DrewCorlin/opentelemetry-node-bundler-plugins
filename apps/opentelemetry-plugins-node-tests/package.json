@@ -41,6 +41,7 @@
     "pino": "^9.6.0",
     "prettier": "3.5.3",
     "redis": "^4.7.0",
+    "terser-webpack-plugin": "^5.3.14",
     "ts-loader": "^9.5.2",
     "ts-mocha": "^11.1.0",
     "ts-node": "^10.9.2",

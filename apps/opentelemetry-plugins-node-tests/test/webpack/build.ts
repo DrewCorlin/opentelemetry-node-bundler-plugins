@@ -3,17 +3,26 @@ import { OpenTelemetryWebpackPlugin } from "@opentelemetry-bundler-plugins/opent
 
 import webpack from "webpack";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-
+import TerserPlugin from "terser-webpack-plugin";
 webpack(
   {
     target: "node",
-    // TODO: production
-    // mode: "production",
-    mode: "development",
+    mode: "production",
     entry: path.normalize(`${__dirname}/../test-app/app.ts`),
     output: {
       path: path.normalize(`${__dirname}/../../test-dist/webpack`),
       filename: "app.js",
+    },
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            // The redis client instrumentation relies on a class name. Not specifically releavant
+            // to this plugin, but that instrumentation package is a good test case
+            keep_classnames: true,
+          },
+        }),
+      ],
     },
     module: {
       rules: [
