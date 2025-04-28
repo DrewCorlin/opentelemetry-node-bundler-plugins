@@ -1,7 +1,7 @@
 import { readFile } from "fs/promises";
 import path from "path";
 
-import { OpenTelemetryPluginParams, PluginData } from "./types";
+import { PluginData } from "./types";
 import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
 import { Compiler, NormalModule } from "webpack";
 import { writeFileSync } from "fs";
@@ -11,6 +11,7 @@ import {
   getInstrumentation,
   getOtelPackageToInstrumentationConfig,
   isBuiltIn,
+  OpenTelemetryPluginParams,
   OtelPluginInstrumentationConfigMap,
   shouldIgnoreModule,
   wrapModule,

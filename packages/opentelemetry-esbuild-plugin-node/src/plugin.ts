@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OnLoadArgs, OpenTelemetryPluginParams, PluginData } from "./types";
+import { OnLoadArgs, PluginData } from "./types";
 import { Plugin, PluginBuild } from "esbuild";
 import { dirname, join } from "path";
 
@@ -26,6 +26,7 @@ import {
   getInstrumentation,
   getOtelPackageToInstrumentationConfig,
   isBuiltIn,
+  OpenTelemetryPluginParams,
   OtelPluginInstrumentationConfigMap,
   shouldIgnoreModule,
   wrapModule,

@@ -7,4 +7,5 @@ export * from "./wrap-module";
 export type {
   ExtractedModule,
   OtelPluginInstrumentationConfigMap,
+  OpenTelemetryPluginParams,
 } from "./types";

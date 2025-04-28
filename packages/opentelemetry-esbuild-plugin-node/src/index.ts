@@ -15,4 +15,4 @@
  */
 
 export { openTelemetryPlugin } from "./plugin";
-export type { OpenTelemetryPluginParams } from "./types";
+export type { OpenTelemetryPluginParams } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
