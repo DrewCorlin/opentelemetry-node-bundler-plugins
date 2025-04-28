@@ -2,7 +2,10 @@ import { readFile } from "fs/promises";
 import path from "path";
 
 import { PluginData } from "./types";
-import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
+import {
+  InstrumentationConfig,
+  InstrumentationModuleDefinition,
+} from "@opentelemetry/instrumentation";
 import { Compiler, NormalModule } from "webpack";
 import { writeFileSync } from "fs";
 import os from "os";
@@ -56,7 +59,7 @@ export class OpenTelemetryWebpackPlugin {
     {
       oTelInstrumentationPackage: keyof OtelPluginInstrumentationConfigMap;
       oTelInstrumentationClass: string;
-      configGenerator: <T extends { enabled?: boolean }>(
+      configGenerator: <T extends InstrumentationConfig>(
         config?: T
       ) => string | undefined;
     }
