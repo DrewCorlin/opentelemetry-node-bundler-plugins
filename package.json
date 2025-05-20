@@ -7,7 +7,11 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "build": "nx run-many -t build",
+    "lint": "nx run-many -t lint",
+    "test": "nx run @opentelemetry-bundler-plugins/tests:test"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
