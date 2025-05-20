@@ -20,6 +20,7 @@ import * as assert from "assert";
 import { exec as execCb, spawnSync } from "child_process";
 import { rm } from "fs/promises";
 import path from "path";
+import { describe, before, after, it } from "node:test";
 
 import { promisify } from "util";
 
@@ -88,8 +89,8 @@ function getTrace(stdOutLines: string[], spanName: string) {
 ].forEach(({ scriptFile, bundler, distFiles }) => {
   describe(
     bundler + " can instrument packages via a plugin: " + scriptFile,
+    { timeout: 60_000 },
     function () {
-      this.timeout(60_000);
       let stdOutLines: string[] = [];
 
       before(async () => {

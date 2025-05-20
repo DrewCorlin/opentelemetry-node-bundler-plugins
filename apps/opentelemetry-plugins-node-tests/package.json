@@ -14,7 +14,7 @@
         ],
         "options": {
           "cwd": "apps/opentelemetry-plugins-node-tests",
-          "command": "nyc ts-mocha -p tsconfig.json 'test/**/*.test.ts'",
+          "command": "nyc node --require ts-node/register --test 'test/**/*.test.ts'",
           "outputPath": "packages/opentelemetry-plugins-node-tests/test-dist"
         }
       }
@@ -26,14 +26,12 @@
     "@opentelemetry/api": "^1.9.0",
     "@opentelemetry/auto-instrumentations-node": "^0.58.0",
     "@opentelemetry/sdk-node": "^0.200.0",
-    "@types/mocha": "^10.0.10",
     "@types/node": "^22.15.2",
     "@types/webpack": "^5.28.5",
     "babel-loader": "^10.0.0",
     "esbuild": "^0.25.3",
     "fastify": "5.3.2",
     "graphql": "^16.11.0",
-    "mocha": "^11.1.0",
     "mongodb": "6.8.0",
     "mongodb-memory-server": "9.5.0",
     "nyc": "17.1.0",
@@ -42,7 +40,6 @@
     "redis": "^4.7.0",
     "terser-webpack-plugin": "^5.3.14",
     "ts-loader": "^9.5.2",
-    "ts-mocha": "^11.1.0",
     "ts-node": "^10.9.2",
     "typescript": "5.8.3",
     "webpack": "^5.99.7"
