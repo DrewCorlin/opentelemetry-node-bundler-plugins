@@ -10,7 +10,8 @@
   "scripts": {
     "build": "nx run-many -t build",
     "lint": "nx run-many -t lint",
-    "test": "nx run @opentelemetry-bundler-plugins/tests:test"
+    "test": "nx run @opentelemetry-bundler-plugins/tests:test",
+    "publish": "nx release publish"
   },
   "keywords": [],
   "author": "",
