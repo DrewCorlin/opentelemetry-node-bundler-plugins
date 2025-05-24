@@ -5,6 +5,17 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "nx": {
+    "targets": {
+      "clean": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "packages/opentelemetry-webpack-plugin-node",
+          "command": "rm -rf dist"
+        }
+      }
+    }
+  },
   "exports": {
     "./package.json": "./package.json",
     ".": {

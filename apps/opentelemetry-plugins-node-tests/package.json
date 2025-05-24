@@ -17,6 +17,13 @@
           "command": "nyc node --require ts-node/register --test 'test/**/*.test.ts'",
           "outputPath": "packages/opentelemetry-plugins-node-tests/test-dist"
         }
+      },
+      "clean": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/opentelemetry-plugins-node-tests",
+          "command": "rm -rf test-dist"
+        }
       }
     }
   },
