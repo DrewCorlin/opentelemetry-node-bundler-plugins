@@ -1,6 +1,6 @@
 {
   "name": "@opentelemetry-bundler-plugins/opentelemetry-esbuild-plugin-node",
-  "version": "0.0.1",
+  "version": "0.2.0-0",
   "private": true,
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils": "0.0.1"
+    "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils": "0.2.0-0"
   },
   "peerDependencies": {
     "esbuild": ">=0.19.x <=0.25.x"
