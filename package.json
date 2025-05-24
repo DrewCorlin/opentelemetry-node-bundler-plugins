@@ -1,6 +1,5 @@
 {
   "name": "@opentelemetry-bundler-plugins/source",
-  "private": true,
   "workspaces": [
     "packages/*",
     "apps/*"

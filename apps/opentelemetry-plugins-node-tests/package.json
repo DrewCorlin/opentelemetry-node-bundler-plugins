@@ -1,7 +1,6 @@
 {
   "name": "@opentelemetry-bundler-plugins/tests",
   "version": "0.0.1",
-  "private": true,
   "nx": {
     "targets": {
       "test": {

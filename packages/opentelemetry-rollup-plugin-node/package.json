@@ -1,6 +1,5 @@
 {
   "name": "opentelemetry-rollup-plugin-node",
-  "private": true,
   "version": "0.3.1-6",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
