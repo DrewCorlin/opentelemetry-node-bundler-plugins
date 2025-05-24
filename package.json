@@ -9,7 +9,7 @@
   "main": "index.js",
   "scripts": {
     "build": "nx run-many -t build",
-    "clean": "nx run-many -t clean",
+    "clean": "nx run-many -t clean && nx reset",
     "lint": "nx run-many -t lint",
     "test": "nx run @opentelemetry-bundler-plugins/tests:test",
     "publish": "nx release publish"
