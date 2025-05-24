@@ -7,6 +7,17 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "nx": {
+    "targets": {
+      "publish": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "./",
+          "command": ":"
+        }
+      }
+    }
+  },
   "scripts": {
     "build": "nx run-many -t build",
     "clean": "nx run-many -t clean && nx reset",
