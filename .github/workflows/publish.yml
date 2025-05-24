@@ -4,6 +4,9 @@ on:
     tags:
       - "*"
 
+permissions:
+  id-token: write
+
 jobs:
   publish:
     runs-on: ubuntu-latest
