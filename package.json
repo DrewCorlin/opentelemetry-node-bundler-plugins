@@ -7,22 +7,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "nx": {
-    "targets": {
-      "publish": {
-        "executor": "nx:run-commands",
-        "options": {
-          "cwd": "./",
-          "command": ":"
-        }
-      }
-    }
-  },
   "scripts": {
     "build": "nx run-many -t build",
     "clean": "nx run-many -t clean && nx reset",
     "lint": "nx run-many -t lint",
-    "test": "nx run @opentelemetry-bundler-plugins/tests:test"
+    "test": "nx run @opentelemetry-bundler-plugins/tests:test",
+    "publish": "nx release publish --exclude @opentelemetry-bundler-plugins/source --exclude @opentelemetry-bundler-plugins/tests --exclude @opentelemetry-bundler-plugins/opentelemetry-bundler-utils"
   },
   "keywords": [],
   "author": "",
