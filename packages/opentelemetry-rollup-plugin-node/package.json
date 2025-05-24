@@ -1,5 +1,5 @@
 {
-  "name": "@opentelemetry-bundler-plugins/opentelemetry-rollup-plugin-node",
+  "name": "opentelemetry-rollup-plugin-node",
   "version": "0.2.0-0",
   "private": true,
   "main": "./dist/index.js",

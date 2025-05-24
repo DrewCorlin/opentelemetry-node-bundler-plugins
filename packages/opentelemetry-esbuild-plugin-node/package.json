@@ -1,5 +1,5 @@
 {
-  "name": "@opentelemetry-bundler-plugins/opentelemetry-esbuild-plugin-node",
+  "name": "opentelemetry-esbuild-plugin-node",
   "version": "0.2.0-0",
   "private": true,
   "main": "./dist/index.js",

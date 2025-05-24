@@ -1,5 +1,5 @@
 {
-  "name": "@opentelemetry-bundler-plugins/opentelemetry-webpack-plugin-node",
+  "name": "opentelemetry-webpack-plugin-node",
   "version": "0.2.0-0",
   "private": true,
   "main": "./dist/index.js",
