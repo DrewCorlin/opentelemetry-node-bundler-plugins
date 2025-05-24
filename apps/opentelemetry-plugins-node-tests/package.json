@@ -23,13 +23,6 @@
           "cwd": "apps/opentelemetry-plugins-node-tests",
           "command": "rm -rf test-dist"
         }
-      },
-      "publish": {
-        "executor": "nx:run-commands",
-        "options": {
-          "cwd": "apps/opentelemetry-plugins-node-tests",
-          "command": ":"
-        }
       }
     }
   },

@@ -1,9 +1,14 @@
 {
-  "name": "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils",
+  "name": "opentelemetry-node-bundler-plugin-utils",
+  "description": "Utils for opentelemetry bundler plugins. You likely don't want to use this package directly",
   "version": "0.3.1-9",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "nx": {
     "targets": {
       "clean": {
@@ -11,13 +16,6 @@
         "options": {
           "cwd": "packages/opentelemetry-bundler-utils",
           "command": "rm -rf dist"
-        }
-      },
-      "publish": {
-        "executor": "nx:run-commands",
-        "options": {
-          "cwd": "packages/opentelemetry-bundler-utils",
-          "command": ":"
         }
       }
     }

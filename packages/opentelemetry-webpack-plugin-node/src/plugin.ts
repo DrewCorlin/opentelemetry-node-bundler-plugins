@@ -19,7 +19,7 @@ import {
   OtelPluginInstrumentationConfigMap,
   shouldIgnoreModule,
   wrapModule,
-} from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
+} from "opentelemetry-node-bundler-plugin-utils";
 
 const tempLoaderPath = path.join(os.tmpdir(), "otel-string-replace-loader.js");
 

@@ -12,7 +12,7 @@
     "clean": "nx run-many -t clean && nx reset",
     "lint": "nx run-many -t lint",
     "test": "nx run @opentelemetry-bundler-plugins/tests:test",
-    "publish": "nx release publish --exclude @opentelemetry-bundler-plugins/source --exclude @opentelemetry-bundler-plugins/tests --exclude @opentelemetry-bundler-plugins/opentelemetry-bundler-utils"
+    "publish": "nx release publish"
   },
   "keywords": [],
   "author": "",

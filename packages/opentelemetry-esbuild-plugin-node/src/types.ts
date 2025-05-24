@@ -16,7 +16,7 @@
 
 import type { OnLoadArgs as EsbuildOnLoadArgs } from "esbuild";
 
-import { ExtractedModule } from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
+import { ExtractedModule } from "opentelemetry-node-bundler-plugin-utils";
 
 export type PluginData = {
   extractedModule: ExtractedModule;

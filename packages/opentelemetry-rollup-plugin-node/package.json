@@ -1,9 +1,14 @@
 {
   "name": "opentelemetry-rollup-plugin-node",
+  "description": "Rollup plugin which bundles opentelemetry node core and contrib instrumentations into your code",
   "version": "0.3.1-9",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "nx": {
     "targets": {
       "clean": {
@@ -11,13 +16,6 @@
         "options": {
           "cwd": "packages/opentelemetry-rollup-plugin-node",
           "command": "rm -rf dist"
-        }
-      },
-      "publish": {
-        "executor": "nx:run-commands",
-        "options": {
-          "cwd": "packages/opentelemetry-rollup-plugin-node",
-          "command": ":"
         }
       }
     }
