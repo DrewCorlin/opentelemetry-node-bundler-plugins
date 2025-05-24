@@ -88,7 +88,7 @@ function getTrace(stdOutLines: string[], spanName: string) {
   },
 ].forEach(({ scriptFile, bundler, distFiles }) => {
   describe(
-    bundler + " can instrument packages via a plugin: " + scriptFile,
+    bundler + " can instrument packages via a plugin",
     { timeout: 60_000 },
     function () {
       let stdOutLines: string[] = [];
