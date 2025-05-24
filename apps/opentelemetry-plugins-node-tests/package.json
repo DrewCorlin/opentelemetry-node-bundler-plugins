@@ -1,6 +1,7 @@
 {
   "name": "@opentelemetry-bundler-plugins/tests",
   "version": "0.0.1",
+  "private": true,
   "nx": {
     "targets": {
       "test": {
@@ -22,6 +23,13 @@
         "options": {
           "cwd": "apps/opentelemetry-plugins-node-tests",
           "command": "rm -rf test-dist"
+        }
+      },
+      "publish": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "apps/opentelemetry-plugins-node-tests",
+          "command": ":"
         }
       }
     }

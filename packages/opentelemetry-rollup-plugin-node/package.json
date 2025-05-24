@@ -1,5 +1,6 @@
 {
   "name": "opentelemetry-rollup-plugin-node",
+  "private": true,
   "version": "0.3.1-5",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
@@ -11,6 +12,13 @@
         "options": {
           "cwd": "packages/opentelemetry-rollup-plugin-node",
           "command": "rm -rf dist"
+        }
+      },
+      "publish": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "packages/opentelemetry-rollup-plugin-node",
+          "command": ":"
         }
       }
     }
