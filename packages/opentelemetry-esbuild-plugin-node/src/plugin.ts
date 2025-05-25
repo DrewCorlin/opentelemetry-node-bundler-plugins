@@ -30,7 +30,7 @@ import {
   OpenTelemetryPluginParams,
   shouldIgnoreModule,
   wrapModule,
-} from "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils";
+} from "opentelemetry-node-bundler-plugin-utils";
 
 export function openTelemetryPlugin(
   pluginConfig: OpenTelemetryPluginParams

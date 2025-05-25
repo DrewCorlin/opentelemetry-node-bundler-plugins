@@ -6,7 +6,7 @@ on:
   pull_request:
 
 jobs:
-  lint:
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

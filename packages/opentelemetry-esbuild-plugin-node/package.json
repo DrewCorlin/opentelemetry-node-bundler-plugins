@@ -1,10 +1,14 @@
 {
-  "name": "@opentelemetry-bundler-plugins/opentelemetry-esbuild-plugin-node",
-  "version": "0.2.0-0",
-  "private": true,
+  "name": "opentelemetry-esbuild-plugin-node",
+  "description": "Esbuild plugin which bundles opentelemetry node core and contrib instrumentations into your code",
+  "version": "0.3.1-9",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
   "nx": {
     "targets": {
       "clean": {
@@ -34,7 +38,7 @@
   },
   "dependencies": {
     "tslib": "^2.3.0",
-    "@opentelemetry-bundler-plugins/opentelemetry-bundler-utils": "0.2.0-0"
+    "opentelemetry-node-bundler-plugin-utils": "0.3.1-9"
   },
   "peerDependencies": {
     "esbuild": ">=0.19.x <=0.25.x"

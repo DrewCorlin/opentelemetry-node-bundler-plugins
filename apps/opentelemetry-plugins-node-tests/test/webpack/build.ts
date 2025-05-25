@@ -1,5 +1,5 @@
 import path from "path";
-import { OpenTelemetryWebpackPlugin } from "@opentelemetry-bundler-plugins/opentelemetry-webpack-plugin-node";
+import { OpenTelemetryWebpackPlugin } from "opentelemetry-webpack-plugin-node";
 
 import webpack from "webpack";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
