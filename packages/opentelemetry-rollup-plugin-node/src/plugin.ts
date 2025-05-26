@@ -66,7 +66,7 @@ export function openTelemetryPlugin(
 
   return {
     name: "open-telemetry",
-    resolveId(importee: string, importer: string | undefined) {
+    resolveId(importee, importer) {
       if (
         !importer ||
         shouldIgnoreModule({
@@ -108,7 +108,7 @@ export function openTelemetryPlugin(
       return path;
     },
 
-    async transform(code: string, id: string) {
+    async transform(code, id) {
       const meta = moduleInfoCache.get(id);
       if (!meta?.shouldPatchPackage) return null;
 
