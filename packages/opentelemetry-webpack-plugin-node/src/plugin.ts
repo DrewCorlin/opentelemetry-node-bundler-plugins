@@ -91,7 +91,7 @@ export class OpenTelemetryWebpackPlugin {
             if (
               shouldIgnoreModule({
                 path: request,
-                importer: contextInfo.issuer || "",
+                importer: contextInfo.issuer,
                 externalModules: this.pluginConfig?.externalModules,
                 pathPrefixesToIgnore: this.pluginConfig?.pathPrefixesToIgnore,
               })
@@ -109,11 +109,11 @@ export class OpenTelemetryWebpackPlugin {
             if (!extractedModule || isBuiltIn(request, extractedModule)) {
               return undefined;
             }
-            const moduleVersion = (await this.getModuleVersion(
+            const moduleVersion = await this.getModuleVersion(
               extractedModule,
               context,
               compiler
-            )) as string | undefined;
+            );
             if (!moduleVersion) return undefined;
 
             const matchingInstrumentation = getInstrumentation({
@@ -142,10 +142,7 @@ export class OpenTelemetryWebpackPlugin {
               resolveData.createData.resourceResolveData = {};
 
             const pluginData: PluginData = {
-              path: path.join(
-                extractedModule.package || "",
-                extractedModule.path || ""
-              ),
+              path: path.join(extractedModule.package, extractedModule.path),
               moduleVersion,
               instrumentationName,
               oTelInstrumentationClass: config.oTelInstrumentationClass,
@@ -195,7 +192,7 @@ export class OpenTelemetryWebpackPlugin {
     },
     resolveDir: string,
     compiler: Compiler
-  ) {
+  ): string | undefined | Promise<string | undefined> {
     const cacheKey = `${extractedModule.package}/package.json`;
     if (this.moduleVersionByPackageJsonPath.has(cacheKey)) {
       return this.moduleVersionByPackageJsonPath.get(cacheKey);
@@ -212,7 +209,7 @@ export class OpenTelemetryWebpackPlugin {
         request,
         context,
         async (err, resolvedPath) => {
-          if (err || !resolvedPath) return resolve(null);
+          if (err || !resolvedPath) return resolve(undefined);
           const contents = await readFile(resolvedPath, "utf-8");
           const version = JSON.parse(contents).version;
           this.moduleVersionByPackageJsonPath.set(cacheKey, version);

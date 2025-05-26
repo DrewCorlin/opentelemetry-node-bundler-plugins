@@ -2,9 +2,7 @@
   "$schema": "./node_modules/nx/schemas/nx-schema.json",
   "targetDefaults": {
     "build": {
-      "outputs": [
-        "{projectRoot}/dist"
-      ],
+      "outputs": ["{projectRoot}/dist"],
       "cache": true
     },
     "typecheck": {
@@ -12,13 +10,8 @@
     },
     "@nx/esbuild:esbuild": {
       "cache": true,
-      "dependsOn": [
-        "^build"
-      ],
-      "inputs": [
-        "default",
-        "^default"
-      ]
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^default"]
     }
   },
   "plugins": [
@@ -46,7 +39,8 @@
   "release": {
     "projects": [
       "packages/opentelemetry-esbuild-plugin-node",
-      "packages/opentelemetry-webpack-plugin-node"
+      "packages/opentelemetry-webpack-plugin-node",
+      "packages/opentelemetry-rollup-plugin-node"
     ]
   }
 }

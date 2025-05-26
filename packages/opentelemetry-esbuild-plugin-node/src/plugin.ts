@@ -123,10 +123,7 @@ export function openTelemetryPlugin(
 
           return {
             contents: wrapModule(contents.toString(), {
-              path: join(
-                extractedModule.package || "",
-                extractedModule.path || ""
-              ),
+              path: join(extractedModule.package, extractedModule.path),
               moduleVersion: pluginData.moduleVersion,
               instrumentationName: pluginData.instrumentationName,
               oTelInstrumentationClass: config.oTelInstrumentationClass,
@@ -152,7 +149,7 @@ async function getModuleVersion({
   extractedModule: ExtractedModule;
   resolveDir: string;
   build: PluginBuild;
-}) {
+}): Promise<string | undefined> {
   const path = `${extractedModule.package}/package.json`;
   const contents = moduleVersionByPackageJsonPath.get(path);
   if (contents) return contents;

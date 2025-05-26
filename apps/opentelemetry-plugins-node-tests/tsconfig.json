@@ -13,6 +13,9 @@
       "path": "../../packages/opentelemetry-webpack-plugin-node"
     },
     {
+      "path": "../../packages/opentelemetry-rollup-plugin-node"
+    },
+    {
       "path": "../../packages/opentelemetry-esbuild-plugin-node"
     },
     {
