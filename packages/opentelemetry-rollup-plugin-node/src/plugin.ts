@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { Plugin, SourceMap } from "rollup";
+import { Plugin } from "rollup";
 import { readFile } from "fs/promises";
 import { dirname, join } from "path";
 import {
@@ -28,15 +28,7 @@ import {
   shouldIgnoreModule,
   wrapModule,
 } from "opentelemetry-node-bundler-plugin-utils";
-
-// TODO: Move to types file
-type PluginData = {
-  extractedModule: ExtractedModule;
-  shouldPatchPackage: boolean;
-  moduleVersion?: string;
-  instrumentationName?: string;
-  path: string;
-};
+import { PluginData } from "./types";
 
 const moduleVersionByPackageJsonPath = new Map<string, string>();
 
@@ -151,10 +143,7 @@ export function openTelemetryPlugin(
       });
 
       const transformedCode = wrapModule(code, {
-        path: join(
-          meta.extractedModule.package || "",
-          meta.extractedModule.path || ""
-        ),
+        path: join(meta.extractedModule.package, meta.extractedModule.path),
         moduleVersion: meta.moduleVersion!,
         instrumentationName: meta.instrumentationName,
         oTelInstrumentationClass: config.oTelInstrumentationClass,
@@ -163,10 +152,7 @@ export function openTelemetryPlugin(
           config.configGenerator(packageConfig),
       });
 
-      return {
-        code: transformedCode,
-        map: { mappings: "" } as SourceMap,
-      };
+      return { code: transformedCode };
     },
   };
 }

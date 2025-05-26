@@ -91,7 +91,7 @@ export class OpenTelemetryWebpackPlugin {
             if (
               shouldIgnoreModule({
                 path: request,
-                importer: contextInfo.issuer || "",
+                importer: contextInfo.issuer,
                 externalModules: this.pluginConfig?.externalModules,
                 pathPrefixesToIgnore: this.pluginConfig?.pathPrefixesToIgnore,
               })
@@ -142,10 +142,7 @@ export class OpenTelemetryWebpackPlugin {
               resolveData.createData.resourceResolveData = {};
 
             const pluginData: PluginData = {
-              path: path.join(
-                extractedModule.package || "",
-                extractedModule.path || ""
-              ),
+              path: path.join(extractedModule.package, extractedModule.path),
               moduleVersion,
               instrumentationName,
               oTelInstrumentationClass: config.oTelInstrumentationClass,

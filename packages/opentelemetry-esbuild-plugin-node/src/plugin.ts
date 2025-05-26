@@ -123,10 +123,7 @@ export function openTelemetryPlugin(
 
           return {
             contents: wrapModule(contents.toString(), {
-              path: join(
-                extractedModule.package || "",
-                extractedModule.path || ""
-              ),
+              path: join(extractedModule.package, extractedModule.path),
               moduleVersion: pluginData.moduleVersion,
               instrumentationName: pluginData.instrumentationName,
               oTelInstrumentationClass: config.oTelInstrumentationClass,

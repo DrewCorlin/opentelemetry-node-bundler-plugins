@@ -55,9 +55,7 @@ async function build() {
   await bundle.close();
 }
 
-build().catch((err) => {
-  throw err;
-});
+build();
 ```
 
 This rollup script will instrument non-builtin packages but will not configure the rest of the OpenTelemetry SDK to export traces
