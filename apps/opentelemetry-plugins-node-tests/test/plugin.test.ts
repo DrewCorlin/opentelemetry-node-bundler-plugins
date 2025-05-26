@@ -86,6 +86,11 @@ function getTrace(stdOutLines: string[], spanName: string) {
     bundler: "webpack",
     distFiles: ["app.js", "app.js.LICENSE.txt"],
   },
+  {
+    scriptFile: "build.ts",
+    bundler: "rollup",
+    distFiles: ["app.js"],
+  },
 ].forEach(({ scriptFile, bundler, distFiles }) => {
   describe(
     bundler + " can instrument packages via a plugin",

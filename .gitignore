@@ -8,3 +8,4 @@ tsconfig.tsbuildinfo
 test-dist/
 .nx/cache
 .nx/workspace-data
+.rollup.cache

@@ -22,6 +22,9 @@
       "path": "../../packages/opentelemetry-webpack-plugin-node/tsconfig.lib.json"
     },
     {
+      "path": "../../packages/opentelemetry-rollup-plugin-node/tsconfig.lib.json"
+    },
+    {
       "path": "../../packages/opentelemetry-esbuild-plugin-node/tsconfig.lib.json"
     }
   ]

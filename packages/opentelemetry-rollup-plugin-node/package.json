@@ -30,6 +30,7 @@
     }
   },
   "dependencies": {
+    "@types/rollup": "^0.51.4",
     "tslib": "^2.3.0"
   }
 }
