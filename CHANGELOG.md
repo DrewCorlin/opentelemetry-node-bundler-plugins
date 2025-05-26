@@ -1,3 +1,7 @@
+## 0.3.1-12 (2025-05-26)
+
+This was a version bump only, there were no code changes.
+
 ## 0.3.1-11 (2025-05-26)
 
 This was a version bump only, there were no code changes.
