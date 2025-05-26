@@ -142,7 +142,7 @@ export function openTelemetryPlugin(
         oTelInstrumentationPackage: config.oTelInstrumentationPackage,
       });
 
-      const transformedCode = wrapModule(code, {
+      return wrapModule(code, {
         path: join(meta.extractedModule.package, meta.extractedModule.path),
         moduleVersion: meta.moduleVersion!,
         instrumentationName: meta.instrumentationName,
@@ -151,8 +151,6 @@ export function openTelemetryPlugin(
         oTelInstrumentationConstructorArgs:
           config.configGenerator(packageConfig),
       });
-
-      return { code: transformedCode };
     },
   };
 }
