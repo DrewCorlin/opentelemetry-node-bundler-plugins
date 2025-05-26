@@ -109,11 +109,11 @@ export class OpenTelemetryWebpackPlugin {
             if (!extractedModule || isBuiltIn(request, extractedModule)) {
               return undefined;
             }
-            const moduleVersion = (await this.getModuleVersion(
+            const moduleVersion = await this.getModuleVersion(
               extractedModule,
               context,
               compiler
-            )) as string | undefined;
+            );
             if (!moduleVersion) return undefined;
 
             const matchingInstrumentation = getInstrumentation({
@@ -195,7 +195,7 @@ export class OpenTelemetryWebpackPlugin {
     },
     resolveDir: string,
     compiler: Compiler
-  ) {
+  ): string | undefined | Promise<string | undefined> {
     const cacheKey = `${extractedModule.package}/package.json`;
     if (this.moduleVersionByPackageJsonPath.has(cacheKey)) {
       return this.moduleVersionByPackageJsonPath.get(cacheKey);
@@ -212,7 +212,7 @@ export class OpenTelemetryWebpackPlugin {
         request,
         context,
         async (err, resolvedPath) => {
-          if (err || !resolvedPath) return resolve(null);
+          if (err || !resolvedPath) return resolve(undefined);
           const contents = await readFile(resolvedPath, "utf-8");
           const version = JSON.parse(contents).version;
           this.moduleVersionByPackageJsonPath.set(cacheKey, version);

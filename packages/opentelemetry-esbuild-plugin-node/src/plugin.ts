@@ -152,7 +152,7 @@ async function getModuleVersion({
   extractedModule: ExtractedModule;
   resolveDir: string;
   build: PluginBuild;
-}) {
+}): Promise<string | undefined> {
   const path = `${extractedModule.package}/package.json`;
   const contents = moduleVersionByPackageJsonPath.get(path);
   if (contents) return contents;

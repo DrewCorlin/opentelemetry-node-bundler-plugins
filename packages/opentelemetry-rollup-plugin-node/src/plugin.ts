@@ -29,6 +29,15 @@ import {
   wrapModule,
 } from "opentelemetry-node-bundler-plugin-utils";
 
+// TODO: Move to types file
+type PluginData = {
+  extractedModule: ExtractedModule;
+  shouldPatchPackage: boolean;
+  moduleVersion?: string;
+  instrumentationName?: string;
+  path: string;
+};
+
 const moduleVersionByPackageJsonPath = new Map<string, string>();
 
 async function getModuleVersion({
@@ -37,7 +46,7 @@ async function getModuleVersion({
 }: {
   extractedModule: ExtractedModule;
   resolveDir: string;
-}) {
+}): Promise<string | undefined> {
   const path = `${extractedModule.package}/package.json`;
   const contents = moduleVersionByPackageJsonPath.get(path);
   if (contents) return contents;
@@ -61,7 +70,7 @@ export function openTelemetryPlugin(
     instrumentationModuleDefinitions,
   } = getOtelPackageToInstrumentationConfig(pluginConfig.instrumentations);
 
-  const moduleInfoCache = new Map<string, any>();
+  const moduleInfoCache = new Map<string, PluginData>();
 
   return {
     name: "open-telemetry",
@@ -97,7 +106,7 @@ export function openTelemetryPlugin(
       if (isBuiltIn(importee, extractedModule)) return null;
 
       // Store the module info for later use in transform
-      const meta = {
+      const meta: PluginData = {
         extractedModule,
         shouldPatchPackage: true,
         path: importee,
@@ -131,8 +140,9 @@ export function openTelemetryPlugin(
         meta.instrumentationName = matchingInstrumentation.name;
       }
 
-      const config =
-        otelPackageToInstrumentationConfig[meta.instrumentationName];
+      const config = meta.instrumentationName
+        ? otelPackageToInstrumentationConfig[meta.instrumentationName]
+        : undefined;
       if (!config) return null;
 
       const packageConfig = getPackageConfig({
@@ -145,7 +155,7 @@ export function openTelemetryPlugin(
           meta.extractedModule.package || "",
           meta.extractedModule.path || ""
         ),
-        moduleVersion: meta.moduleVersion,
+        moduleVersion: meta.moduleVersion!,
         instrumentationName: meta.instrumentationName,
         oTelInstrumentationClass: config.oTelInstrumentationClass,
         oTelInstrumentationPackage: config.oTelInstrumentationPackage,
