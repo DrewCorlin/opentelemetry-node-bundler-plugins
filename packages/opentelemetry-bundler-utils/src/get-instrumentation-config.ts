@@ -16,7 +16,6 @@
 
 import {
   Instrumentation,
-  InstrumentationBase,
   InstrumentationModuleDefinition,
 } from "@opentelemetry/instrumentation";
 import { OtelPluginInstrumentationConfigMap } from "./types";
@@ -24,8 +23,15 @@ import { OtelPluginInstrumentationConfigMap } from "./types";
 function getModuleDefinitions(
   instrumentation: Instrumentation
 ): InstrumentationModuleDefinition[] {
-  if (instrumentation instanceof InstrumentationBase) {
-    return instrumentation.getModuleDefinitions() ?? [];
+  if (
+    // Don't use instanceof InstrumentationBase because dependency version constraints can throw it off
+    "getModuleDefinitions" in instrumentation &&
+    typeof instrumentation.getModuleDefinitions === "function"
+  ) {
+    return (
+      (instrumentation.getModuleDefinitions() as InstrumentationModuleDefinition[]) ??
+      []
+    );
   }
 
   return [];
