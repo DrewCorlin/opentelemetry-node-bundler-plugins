@@ -40,7 +40,8 @@
     "projects": [
       "packages/opentelemetry-esbuild-plugin-node",
       "packages/opentelemetry-webpack-plugin-node",
-      "packages/opentelemetry-rollup-plugin-node"
+      "packages/opentelemetry-rollup-plugin-node",
+      "packages/opentelemetry-bundler-utils"
     ]
   }
 }
