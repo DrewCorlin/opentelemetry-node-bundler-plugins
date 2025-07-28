@@ -1,7 +1,7 @@
 # opentelemetry-bundler-utils
 
-This library was generated with [Nx](https://nx.dev).
+This library is a set of utils for bundler plugins to instrument applicaitons with OpenTelemetry instrumentation.
 
-## Building
+You likely don't want to use this library directly.
 
-Run `nx build opentelemetry-bundler-utils` to build the library.
+See https://github.com/DrewCorlin/opentelemetry-node-bundler-plugins
