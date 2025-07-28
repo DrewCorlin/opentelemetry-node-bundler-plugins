@@ -1,3 +1,7 @@
+## 4.1.0 (2025-07-28)
+
+This was a version bump only, there were no code changes.
+
 ## 4.0.1 (2025-07-26)
 
 Release opentelemetry-bundler-utils with each change
