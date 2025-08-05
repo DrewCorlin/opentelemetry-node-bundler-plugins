@@ -94,9 +94,7 @@ process.on("SIGTERM", () => {
 
 ### Gotchas
 
-There are limitations to the configuration options for each package. Most notably, any functions are not allowed to be passed in to plugins.
-
-The reason for this is that the current mechanism of instrumenting packages involves stringifying the instrumentation configs, which does not account for any external scoped dependencies, and thus creates subtle opportunities for bugs.
+Functions are supported in instrumentation configs, but be aware that they must be _pure_ (ie: they cannot reference any external values, only their parameters). This is because the configuration object is serialized/deserialized and embedded into the final bundle, and so the external scope of the function will be different than the one in the bundler configuration file.
 
 ## Supported instrumentations
 

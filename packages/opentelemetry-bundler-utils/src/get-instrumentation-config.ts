@@ -19,6 +19,7 @@ import {
   InstrumentationModuleDefinition,
 } from "@opentelemetry/instrumentation";
 import { OtelPluginInstrumentationConfigMap } from "./types";
+import { stringify } from 'javascript-stringify';
 
 function getModuleDefinitions(
   instrumentation: Instrumentation
@@ -41,11 +42,7 @@ function configGenerator<T extends { enabled?: boolean }>(
   config?: T
 ): string | undefined {
   if (!config) return;
-  return JSON.stringify(
-    Object.fromEntries(
-      Object.entries(config).filter(([, v]) => typeof v !== "function")
-    )
-  );
+  return stringify(config, null, 2);
 }
 
 export function getOtelPackageToInstrumentationConfig(
