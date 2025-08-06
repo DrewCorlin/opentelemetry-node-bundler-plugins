@@ -58,6 +58,11 @@ webpack(
               traceFlags: "traceFlags",
             },
           },
+          "@opentelemetry/instrumentation-fastify": {
+            requestHook: (span) => {
+              span.setAttribute("test.attribute", "test");
+            },
+          },
         }),
       }),
     ],

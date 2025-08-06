@@ -58,6 +58,17 @@ function getTraceId(
   return traceId;
 }
 
+function getTestAttribute(
+  stdOutLines: string[],
+  spanName: string
+) {
+  const traceLines = getTrace(stdOutLines, spanName);
+  if (!traceLines) return;
+  const testAttribute = /'test\.attribute': '(.*?)'/.exec(traceLines)?.[1];
+
+  return testAttribute;
+}
+
 function getTrace(stdOutLines: string[], spanName: string) {
   const traceLogNameLineIndex = stdOutLines.findIndex((logLine) =>
     logLine.includes(`name: '${spanName}'`)
@@ -162,6 +173,13 @@ function getTrace(stdOutLines: string[], spanName: string) {
         assert.ok(requestHandlerLogMessage, "Log message handler is triggered");
         const { traceId: pinoTraceId } = JSON.parse(requestHandlerLogMessage);
         assert.equal(traceId, pinoTraceId, "Pino logs include trace ID");
+
+        const testAttribute = getTestAttribute(
+          stdOutLines,
+          "request handler - fastify -> @fastify/rate-limit"
+        );
+
+        assert.equal(testAttribute, "test", "test.attribute is present in span");
       });
 
       it("redis", async () => {
