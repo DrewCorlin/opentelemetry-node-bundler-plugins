@@ -75,9 +75,76 @@ process.on("SIGTERM", () => {
 
 ### Gotchas
 
-There are limitations to the configuration options for each package. Most notably, any functions are not allowed to be passed in to plugins.
+NB: Not all config options for each instrumentation will be respected. Notably, functions must be pure.
+That is not rely on closed over variables, with the exception of a few safe globals:
 
-The reason for this is that the current mechanism of instrumenting packages involves stringifying the instrumentation configs, which does not account for any external scoped dependencies, and thus creates subtle opportunities for bugs.
+- `console`
+- `Math`
+- `Error`
+- `AssertionError`
+- `RangeError`
+- `ReferenceError`
+- `SyntaxError`
+- `SystemError`
+- `TypeError`
+- `Date`
+- `JSON`
+- `Number`
+- `String`
+- `Boolean`
+- `parseInt`
+- `parseFloat`
+
+This works:
+
+```typescript
+openTelemetryPlugin({
+  instrumentations: [
+    new PinoInstrumentation({
+      logHook: (span, record) => {
+        record["resource.service.name"] =
+          provider.resource.attributes["service.name"];
+      },
+    }),
+  ],
+});
+```
+
+and so does this:
+
+```typescript
+openTelemetryPlugin({
+  instrumentations: [
+    new PinoInstrumentation({
+      logHook: (span, record) => {
+        record["resource.service.id"] = parseInt(
+          Iprovider.resource.attributes["service.id"]
+        );
+      },
+    }),
+  ],
+});
+```
+
+This would not, despite being valid javascript/typescript
+
+```typescript
+function getServiceName() {
+  return "service-name";
+}
+
+openTelemetryPlugin({
+  instrumentations: [
+    new PinoInstrumentation({
+      logHook: (span, record) => {
+        record["resource.service.name"] = getServiceName();
+      },
+    }),
+  ],
+});
+```
+
+The reason for this is that the current mechanism of instrumenting packages involves stringifying the instrumentation configs, which involves stringifying functions. Stringifying functions with closed over state is very difficult.
 
 ## Supported instrumentations
 
