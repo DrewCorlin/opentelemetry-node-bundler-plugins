@@ -179,7 +179,7 @@ function getTrace(stdOutLines: string[], spanName: string) {
           "request handler - fastify -> @fastify/rate-limit"
         );
 
-        assert.ok(testAttribute, "test.attribute is present in span");
+        assert.equal(testAttribute, "test", "test.attribute is present in span");
       });
 
       it("redis", async () => {

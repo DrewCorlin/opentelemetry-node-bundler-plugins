@@ -42,7 +42,7 @@ function configGenerator<T extends { enabled?: boolean }>(
   config?: T
 ): string | undefined {
   if (!config) return;
-  return stringify(config, null, 2);
+  return stringify(config);
 }
 
 export function getOtelPackageToInstrumentationConfig(
