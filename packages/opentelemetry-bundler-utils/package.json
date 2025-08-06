@@ -12,6 +12,20 @@
   },
   "nx": {
     "targets": {
+      "test": {
+        "executor": "nx:run-commands",
+        "outputs": [
+          "{options.outputPath}"
+        ],
+        "dependsOn": [
+          "^build"
+        ],
+        "options": {
+          "cwd": "packages/opentelemetry-bundler-utils",
+          "command": "nyc node --require ts-node/register --test 'src/**/*.test.ts'",
+          "outputPath": "packages/opentelemetry-plugins-node-tests/test-dist"
+        }
+      },
       "clean": {
         "executor": "nx:run-commands",
         "options": {
@@ -31,10 +45,14 @@
   },
   "dependencies": {
     "@opentelemetry/instrumentation": "^0.200.0",
+    "acorn": "^8.15.0",
+    "acorn-walk": "^8.3.4",
     "semver": "^7.7.1",
     "tslib": "^2.3.0"
   },
   "devDependencies": {
-    "@types/semver": "^7.7.0"
+    "@types/semver": "^7.7.0",
+    "nyc": "^17.1.0",
+    "ts-node": "^10.9.2"
   }
 }

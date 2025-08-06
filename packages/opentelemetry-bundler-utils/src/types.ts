@@ -28,31 +28,61 @@ export interface OpenTelemetryPluginParams {
   /**
    * Instrumentations to apply
    *
-   * NB: Not all config options for each instrumentation will be respected. Notably, functions will be ignored
-   * as this plugin requires serializing the configs as JSON during bundling which are then read at runtime.
+   * NB: Not all config options for each instrumentation will be respected. Notably, functions must be pure.
+   * That is not rely on closed over variables, with the exception of a few safe globals:
+   * * `console`
+   * * `Math`
+   * * `Error`
+   * * `AssertionError`
+   * * `RangeError`
+   * * `ReferenceError`
+   * * `SyntaxError`
+   * * `SystemError`
+   * * `TypeError`
+   * * `Date`
+   * * `JSON`
+   * * `Number`
+   * * `String`
+   * * `Boolean`
+   * * `parseInt`
+   * * `parseFloat`
    *
    * This works:
    * ```typescript
    * openTelemetryPlugin({
    *   instrumentations: [
    *     new PinoInstrumentation({
-   *       logKeys: {
-   *         traceId: 'traceId',
-   *         spanId: 'spanId',
-   *         traceFlags: 'traceFlags',
+   *       logHook: (span, record) => {
+   *         record['resource.service.name'] = provider.resource.attributes['service.name'];
+   *       }
+   *     })
+   *   ]
+   * })
+   * ```
+   * and so does this:
+   * ```typescript
+   * openTelemetryPlugin({
+   *   instrumentations: [
+   *     new PinoInstrumentation({
+   *       logHook: (span, record) => {
+   *         record['resource.service.id'] = parseInt(Iprovider.resource.attributes['service.id']);
    *       }
    *     })
    *   ]
    * })
    * ```
    *
-   * This would not (logHook would be ignored)
+   * This would not, despite being valid javascript/typescript
    * ```typescript
+   * function getServiceName() {
+   *   return "service-name";
+   * }
+   *
    * openTelemetryPlugin({
    *   instrumentations: [
    *     new PinoInstrumentation({
    *       logHook: (span, record) => {
-   *         record['resource.service.name'] = provider.resource.attributes['service.name'];
+   *         record['resource.service.name'] = getServiceName();
    *       }
    *     })
    *   ]

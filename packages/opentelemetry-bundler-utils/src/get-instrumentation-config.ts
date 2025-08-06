@@ -19,6 +19,7 @@ import {
   InstrumentationModuleDefinition,
 } from "@opentelemetry/instrumentation";
 import { OtelPluginInstrumentationConfigMap } from "./types";
+import { isPureFunction } from "./is-pure-function";
 
 function getModuleDefinitions(
   instrumentation: Instrumentation
@@ -37,15 +38,36 @@ function getModuleDefinitions(
   return [];
 }
 
+function getFunctionPlaceholder(id: number) {
+  return `___FUNC_PLACEHOLDER_${id}___`;
+}
+
 function configGenerator<T extends { enabled?: boolean }>(
   config?: T
 ): string | undefined {
   if (!config) return;
-  return JSON.stringify(
-    Object.fromEntries(
-      Object.entries(config).filter(([, v]) => typeof v !== "function")
-    )
-  );
+
+  const functionPlaceholders: string[] = [];
+  const jsonString = JSON.stringify(config, (key, value) => {
+    if (typeof value === "function") {
+      const placeholder = getFunctionPlaceholder(functionPlaceholders.length);
+      const stringifiedFunction = value.toString();
+      if (!isPureFunction(stringifiedFunction)) {
+        throw new Error("Functions used for configuration must be pure");
+      }
+      functionPlaceholders.push(stringifiedFunction);
+      return placeholder;
+    }
+    return value;
+  });
+
+  // Replace each placeholder with its function code (unquoted)
+  const finalString = functionPlaceholders.reduce((str, funcString, index) => {
+    const placeholder = `"${getFunctionPlaceholder(index)}"`;
+    return str.replace(placeholder, funcString);
+  }, jsonString);
+
+  return finalString;
 }
 
 export function getOtelPackageToInstrumentationConfig(

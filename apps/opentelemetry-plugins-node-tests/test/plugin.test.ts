@@ -160,8 +160,16 @@ function getTrace(stdOutLines: string[], spanName: string) {
         );
 
         assert.ok(requestHandlerLogMessage, "Log message handler is triggered");
-        const { traceId: pinoTraceId } = JSON.parse(requestHandlerLogMessage);
+        const { traceId: pinoTraceId, customFieldFromLogHook } = JSON.parse(
+          requestHandlerLogMessage
+        );
+
         assert.equal(traceId, pinoTraceId, "Pino logs include trace ID");
+        assert.equal(
+          customFieldFromLogHook,
+          "this is a custom field added by the log hook",
+          "The plugin allows configuring log hooks too"
+        );
       });
 
       it("redis", async () => {

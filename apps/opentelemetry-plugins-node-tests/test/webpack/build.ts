@@ -57,6 +57,10 @@ webpack(
               spanId: "spanId",
               traceFlags: "traceFlags",
             },
+            logHook: (_, record) => {
+              record["customFieldFromLogHook"] =
+                "this is a custom field added by the log hook";
+            },
           },
         }),
       }),
