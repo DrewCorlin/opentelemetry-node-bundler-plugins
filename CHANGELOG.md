@@ -1,3 +1,7 @@
+## 4.3.0 (2025-11-03)
+
+This was a version bump only, there were no code changes.
+
 ## 4.2.1 (2025-09-18)
 
 This was a version bump only, there were no code changes.
