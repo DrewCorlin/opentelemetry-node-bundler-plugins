@@ -22,3 +22,7 @@ The existing auto instrumentation provided by OpenTelemetry relies on patching t
 on first import and add instrumentation. When bundling your code into a single JS file all `require()` calls are removed, breaking this approach.
 
 These plugins effectively move that patching from runtime (import time) to build time, leveraging the same patching that individual instrumentations provide to wrap modules in a few lines of code so that they are still instrumented even after bundling.
+
+### Releasing
+
+See [RELEASE.md](./RELEASE.md)
