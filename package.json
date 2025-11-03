@@ -14,7 +14,14 @@
     "test": "nx run @opentelemetry-bundler-plugins/tests:test",
     "publish": "nx release publish"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DrewCorlin/opentelemetry-node-bundler-plugins.git"
+  },
+  "keywords": [
+    "opentelemetry",
+    "bundler"
+  ],
   "author": "",
   "license": "MIT",
   "devDependencies": {

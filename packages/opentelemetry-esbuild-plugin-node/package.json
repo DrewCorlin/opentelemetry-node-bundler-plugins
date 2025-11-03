@@ -10,6 +10,16 @@
     "access": "public",
     "registry": "https://registry.npmjs.org"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DrewCorlin/opentelemetry-node-bundler-plugins.git",
+    "directory": "packages/opentelemetry-esbuild-plugin-node"
+  },
+  "keywords": [
+    "opentelemetry",
+    "bundler",
+    "esbuild"
+  ],
   "nx": {
     "targets": {
       "clean": {
