@@ -19,7 +19,7 @@ import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentation
 build({
   entryPoints: "src/server.ts",
   bundle: true,
-  outfile: "test-dist/esbuild/app.js",
+  outfile: "dist/esbuild/app.js",
   target: "node20",
   platform: "node",
   plugins: [
@@ -70,6 +70,28 @@ sdk.start();
 
 process.on("SIGTERM", () => {
   sdk.shutdown().finally(() => process.exit(0));
+});
+```
+
+## External packages
+
+If you have packages that you would like to treat as external and have this plugin ignore, use the `externalModules` options.
+
+This is conceptually similar to [esbuild's external](https://esbuild.github.io/api/#external) option.
+
+```typescript
+build({
+  entryPoints: "src/server.ts",
+  bundle: true,
+  outfile: "dist/esbuild/app.js",
+  target: "node20",
+  platform: "node",
+  plugins: [
+    openTelemetryPlugin({
+      instrumentations: getNodeAutoInstrumentations(),
+      externalModules: ["encoding"],
+    }),
+  ],
 });
 ```
 

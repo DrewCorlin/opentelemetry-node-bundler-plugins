@@ -108,6 +108,76 @@ process.on("SIGTERM", () => {
 });
 ```
 
+## External packages
+
+If you have packages that you would like to treat as external and have this plugin ignore, use the `externalModules` options.
+
+This is conceptually similar to [webpack's external](https://webpack.js.org/configuration/externals/) option.
+
+```typescript
+import { OpenTelemetryWebpackPlugin } from "opentelemetry-webpack-plugin-node";
+
+import webpack from "webpack";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import TerserPlugin from "terser-webpack-plugin";
+webpack(
+  {
+    target: "node",
+    mode: "production",
+    entry: "src/server.ts",
+    output: {
+      path: "dist/webpack",
+      filename: "app.js",
+    },
+    optimization: {
+      minimizer: [
+        new TerserPlugin({
+          terserOptions: {
+            // The redis client instrumentation relies on a class name. You can remove this if you are not using redis
+            keep_classnames: true,
+          },
+        }),
+      ],
+    },
+    module: {
+      rules: [
+        {
+          test: /\.ts$/,
+          use: "ts-loader",
+          exclude: /node_modules/,
+        },
+        {
+          type: "javascript/auto",
+          test: /\.mjs$/,
+          use: {
+            loader: "babel-loader",
+            options: {
+              targets: "defaults",
+              presets: [["@babel/preset-env", { modules: "commonjs" }]],
+            },
+          },
+        },
+      ],
+    },
+    resolve: {
+      extensions: [".ts", ".js", ".mjs"],
+    },
+    plugins: [
+      new OpenTelemetryWebpackPlugin({
+        instrumentations: getNodeAutoInstrumentations(),
+        externalModules: ["encoding"],
+      }),
+    ],
+  },
+  (err, stats) => {
+    if (err || stats?.hasErrors()) {
+      console.error(err, stats?.toString());
+      throw err;
+    }
+  }
+);
+```
+
 ### Gotchas
 
 Functions are supported in instrumentation configs, but be aware that they must be _pure_ (ie: they cannot reference any external values, only their parameters). This is because the configuration object is serialized/deserialized and embedded into the final bundle, and so the external scope of the function will be different than the one in the bundler configuration file.
