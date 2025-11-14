@@ -48,7 +48,7 @@ async function build() {
   });
 
   await bundle.write({
-    file: path.normalize(`${__dirname}/../../test-dist/rollup/app.js`),
+    file: path.normalize(`${__dirname}/../../dist/rollup/app.js`),
     format: "cjs",
   });
 
@@ -90,6 +90,51 @@ sdk.start();
 process.on("SIGTERM", () => {
   sdk.shutdown().finally(() => process.exit(0));
 });
+```
+
+## External packages
+
+If you have packages that you would like to treat as external and have this plugin ignore, use the `externalModules` options.
+
+This is conceptually similar to [rollup's external](https://rollupjs.org/configuration-options/#external) option.
+
+```typescript
+import { rollup } from "rollup";
+import { openTelemetryPlugin } from "opentelemetry-rollup-plugin-node";
+import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import path from "path";
+import typescript from "@rollup/plugin-typescript";
+import commonjs from "@rollup/plugin-commonjs";
+import nodeResolve from "@rollup/plugin-node-resolve";
+import json from "@rollup/plugin-json";
+
+async function build() {
+  const bundle = await rollup({
+    input: path.normalize(`${__dirname}/../test-app/app.ts`),
+    plugins: [
+      nodeResolve({ extensions: [".mjs", ".js", ".json", ".ts"] }),
+      openTelemetryPlugin({
+        instrumentations: getNodeAutoInstrumentations(),
+        externalModules: ["encoding"],
+      }),
+      commonjs(),
+      json(),
+      typescript({
+        tsconfig: path.normalize(`${__dirname}/../../tsconfig.json`),
+        sourceMap: false,
+      }),
+    ],
+  });
+
+  await bundle.write({
+    file: path.normalize(`${__dirname}/../../dist/rollup/app.js`),
+    format: "cjs",
+  });
+
+  await bundle.close();
+}
+
+build();
 ```
 
 ### Gotchas
