@@ -28,6 +28,7 @@ import {
   getPackageConfig,
   isBuiltIn,
   OpenTelemetryPluginParams,
+  resolveInstrumentations,
   shouldIgnoreModule,
   wrapModule,
 } from "opentelemetry-node-bundler-plugin-utils";
@@ -35,10 +36,12 @@ import {
 export function openTelemetryPlugin(
   pluginConfig: OpenTelemetryPluginParams
 ): Plugin {
+  const instrumentations = resolveInstrumentations(pluginConfig);
+  const runtimeConfig = { ...pluginConfig, instrumentations };
   const {
     otelPackageToInstrumentationConfig,
     instrumentationModuleDefinitions,
-  } = getOtelPackageToInstrumentationConfig(pluginConfig.instrumentations);
+  } = getOtelPackageToInstrumentationConfig(instrumentations);
 
   return {
     name: "open-telemetry",
@@ -116,7 +119,7 @@ export function openTelemetryPlugin(
           if (!config) return;
 
           const packageConfig = getPackageConfig({
-            pluginConfig,
+            pluginConfig: runtimeConfig,
             oTelInstrumentationPackage: config.oTelInstrumentationPackage,
           });
           const extractedModule = pluginData.extractedModule;

@@ -13,6 +13,11 @@ export type OtelPluginInstrumentationConfigMap = Record<
   InstrumentationConfig
 >;
 
+export type InstrumentationConfigOverrides = Record<
+  string,
+  InstrumentationConfig | Record<string, unknown> | undefined
+>;
+
 export interface OpenTelemetryPluginParams {
   /** Modules to consider external and ignore from the plugin */
   externalModules?: string[];
@@ -26,7 +31,11 @@ export interface OpenTelemetryPluginParams {
   pathPrefixesToIgnore?: string[];
 
   /**
-   * Instrumentations to apply
+   * Instrumentations to apply.
+   *
+   * If omitted, the plugin will attempt to `require()` an auto-instrumentation
+   * module (defaults to `@opentelemetry/auto-instrumentations-node`) and call
+   * its `getNodeAutoInstrumentations` helper.
    *
    * NB: Not all config options for each instrumentation will be respected. Notably, functions will be ignored
    * as this plugin requires serializing the configs as JSON during bundling which are then read at runtime.
@@ -59,5 +68,11 @@ export interface OpenTelemetryPluginParams {
    * })
    * ```
    */
-  instrumentations: Instrumentation[];
+  instrumentations?: Instrumentation[];
+
+  /**
+   * Optional configuration map that is passed to the auto-instrumentation
+   * module when `instrumentations` are not provided.
+   */
+  instrumentationConfig?: InstrumentationConfigOverrides;
 }

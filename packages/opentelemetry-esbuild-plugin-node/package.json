@@ -48,8 +48,9 @@
     "typescript": "5.8.3"
   },
   "dependencies": {
-    "tslib": "^2.3.0",
-    "opentelemetry-node-bundler-plugin-utils": "0.6.0"
+    "@opentelemetry/auto-instrumentations-node": "0.67.3",
+    "opentelemetry-node-bundler-plugin-utils": "0.6.0",
+    "tslib": "^2.3.0"
   },
   "peerDependencies": {
     "esbuild": ">=0.19.x <=0.25.x"

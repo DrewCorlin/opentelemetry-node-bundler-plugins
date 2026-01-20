@@ -10,7 +10,7 @@ export function getPackageConfig({
   pluginConfig: OpenTelemetryPluginParams;
   oTelInstrumentationPackage: keyof OtelPluginInstrumentationConfigMap;
 }) {
-  const matchingPlugin = pluginConfig.instrumentations.find(
+  const matchingPlugin = pluginConfig.instrumentations?.find(
     (i) => i.instrumentationName === oTelInstrumentationPackage
   );
   if (!matchingPlugin) {
