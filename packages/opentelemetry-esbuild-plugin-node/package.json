@@ -52,6 +52,6 @@
     "opentelemetry-node-bundler-plugin-utils": "0.6.0"
   },
   "peerDependencies": {
-    "esbuild": ">=0.19.x <=0.25.x"
+    "esbuild": ">=0.19.x"
   }
 }
