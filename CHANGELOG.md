@@ -1,3 +1,13 @@
+## 4.4.0 (2026-02-01)
+
+### 🩹 Fixes
+
+- remove limits on esbuild versions ([#16](https://github.com/DrewCorlin/-opentelemetry-bundler-plugins/pull/16))
+
+### ❤️ Thank You
+
+- Fred Cox @mcfedr
+
 ## 4.3.0 (2025-11-03)
 
 This was a version bump only, there were no code changes.
