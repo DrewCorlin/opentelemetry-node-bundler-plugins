@@ -1,10 +1,11 @@
 {
-  "name": "opentelemetry-node-bundler-plugin-utils",
-  "description": "Utils for opentelemetry bundler plugins. You likely don't want to use this package directly",
-  "version": "0.7.0",
+  "name": "opentelemetry-unplugin-node",
+  "description": "Unplugin plugin which bundles opentelemetry node core and contrib instrumentations into your code",
+  "version": "4.4.0",
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "type": "module",
   "license": "MIT",
   "engines": {
     "node": ">=20.19.0"
@@ -16,14 +17,23 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/DrewCorlin/opentelemetry-node-bundler-plugins.git",
-    "directory": "packages/opentelemetry-bundler-utils"
+    "directory": "packages/opentelemetry-unplugin-node"
   },
+  "keywords": [
+    "opentelemetry",
+    "bundler",
+    "unplugin",
+    "vite",
+    "rollup",
+    "webpack",
+    "esbuild"
+  ],
   "nx": {
     "targets": {
       "clean": {
         "executor": "nx:run-commands",
         "options": {
-          "cwd": "packages/opentelemetry-bundler-utils",
+          "cwd": "packages/opentelemetry-unplugin-node",
           "command": "rm -rf dist"
         }
       }
@@ -38,12 +48,8 @@
     }
   },
   "dependencies": {
-    "@opentelemetry/instrumentation": "^0.200.0",
-    "javascript-stringify": "^2.1.0",
-    "semver": "^7.7.1",
-    "tslib": "^2.3.0"
-  },
-  "devDependencies": {
-    "@types/semver": "^7.7.0"
+    "opentelemetry-node-bundler-plugin-utils": "0.7.0",
+    "tslib": "^2.3.0",
+    "unplugin": "^3.0.0"
   }
 }

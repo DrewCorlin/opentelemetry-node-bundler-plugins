@@ -2,6 +2,9 @@
   "name": "@opentelemetry-bundler-plugins/tests",
   "version": "0.0.1",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.19.0"
+  },
   "nx": {
     "targets": {
       "test": {
@@ -49,6 +52,7 @@
     "pino": "^9.6.0",
     "prettier": "3.5.3",
     "redis": "^4.7.0",
+    "rolldown": "^1.1.2",
     "rollup": "^4.41.1",
     "terser-webpack-plugin": "^5.3.14",
     "ts-loader": "^9.5.2",
