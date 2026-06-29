@@ -25,6 +25,7 @@
     "unplugin",
     "vite",
     "rollup",
+    "rolldown",
     "webpack",
     "esbuild"
   ],
