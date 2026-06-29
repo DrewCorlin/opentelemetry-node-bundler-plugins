@@ -2,9 +2,6 @@
   "name": "@opentelemetry-bundler-plugins/tests",
   "version": "0.0.1",
   "license": "MIT",
-  "engines": {
-    "node": ">=20.19.0"
-  },
   "nx": {
     "targets": {
       "test": {
