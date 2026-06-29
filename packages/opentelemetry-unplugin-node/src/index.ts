@@ -15,5 +15,4 @@
  */
 
 export { openTelemetryPlugin } from "./plugin.js";
-export { openTelemetryPlugin as default } from "./plugin.js";
 export type { OpenTelemetryPluginParams } from "opentelemetry-node-bundler-plugin-utils";
