@@ -15,6 +15,7 @@ See each packages README for more details
 - [opentelemetry-esbuild-plugin-node](./packages/opentelemetry-esbuild-plugin-node/README.md)
 - [opentelemetry-webpack-plugin-node](./packages/opentelemetry-webpack-plugin-node/README.md)
 - [opentelemetry-rollup-plugin-node](./packages/opentelemetry-rollup-plugin-node/README.md)
+- [opentelemetry-unplugin-node](./packages/opentelemetry-unplugin-node/README.md)
 
 ### Why
 
