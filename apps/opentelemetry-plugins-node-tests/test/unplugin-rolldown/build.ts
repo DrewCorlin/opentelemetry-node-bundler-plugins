@@ -18,6 +18,7 @@ import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentation
 import path from "path";
 
 async function build() {
+  // Needed since ts-node is running in CJS mode 
   const [{ rolldown }, { openTelemetryPlugin }] = await Promise.all([
     import("rolldown"),
     import("opentelemetry-unplugin-node"),
