@@ -17,6 +17,9 @@
     },
     {
       "path": "./packages/opentelemetry-bundler-utils"
+    },
+    {
+      "path": "./packages/opentelemetry-unplugin-node"
     }
   ]
 }

@@ -1,0 +1,13 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "../opentelemetry-bundler-utils"
+    },
+    {
+      "path": "./tsconfig.lib.json"
+    }
+  ]
+}

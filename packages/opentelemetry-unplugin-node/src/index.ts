@@ -14,12 +14,5 @@
  * limitations under the License.
  */
 
-import { ExtractedModule } from "opentelemetry-node-bundler-plugin-utils";
-
-export type PluginData = {
-  extractedModule: ExtractedModule;
-  shouldPatchPackage: boolean;
-  moduleVersion?: string;
-  instrumentationName?: string;
-  path: string;
-};
+export { openTelemetryPlugin } from "./plugin.js";
+export type { OpenTelemetryPluginParams } from "opentelemetry-node-bundler-plugin-utils";

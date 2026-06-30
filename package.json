@@ -33,7 +33,7 @@
     "@swc-node/register": "~1.9.1",
     "@swc/core": "~1.5.7",
     "@swc/helpers": "~0.5.11",
-    "@types/node": "18.16.9",
+    "@types/node": "^22.15.2",
     "eslint": "^9.8.0",
     "eslint-config-prettier": "^10.0.0",
     "jsonc-eslint-parser": "^2.1.0",

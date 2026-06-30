@@ -102,6 +102,16 @@ function getTrace(stdOutLines: string[], spanName: string) {
     bundler: "rollup",
     distFiles: ["app.js"],
   },
+  {
+    scriptFile: "build.ts",
+    bundler: "unplugin-rollup",
+    distFiles: ["app.js"],
+  },
+  {
+    scriptFile: "build.ts",
+    bundler: "unplugin-rolldown",
+    distFiles: ["app.js"],
+  },
 ].forEach(({ scriptFile, bundler, distFiles }) => {
   describe(
     bundler + " can instrument packages via a plugin",
