@@ -16,6 +16,7 @@
 
 import { Plugin } from "rollup";
 import { readFile } from "fs/promises";
+import { createRequire } from "module";
 import { dirname, join } from "path";
 import {
   ExtractedModule,
@@ -28,7 +29,9 @@ import {
   shouldIgnoreModule,
   wrapModule,
 } from "opentelemetry-node-bundler-plugin-utils";
-import { PluginData } from "./types";
+import type { PluginData } from "./types.js";
+
+const require = createRequire(import.meta.url);
 
 const moduleVersionByPackageJsonPath = new Map<string, string>();
 

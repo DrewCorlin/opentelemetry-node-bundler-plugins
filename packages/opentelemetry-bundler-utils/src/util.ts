@@ -1,5 +1,5 @@
 import { builtinModules } from "module";
-import { ExtractedModule } from "./types";
+import type { ExtractedModule } from "./types.js";
 
 const BUILT_INS = new Set(builtinModules.flatMap((b) => [b, `node:${b}`]));
 export function isBuiltIn(

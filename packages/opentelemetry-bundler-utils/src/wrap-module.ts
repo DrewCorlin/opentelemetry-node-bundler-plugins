@@ -33,7 +33,7 @@ export function wrapModule(
     instrumentationName,
     oTelInstrumentationConstructorArgs = "",
   }: ModuleParams
-) {
+): string {
   return `
 (function() {
   ${originalSource}

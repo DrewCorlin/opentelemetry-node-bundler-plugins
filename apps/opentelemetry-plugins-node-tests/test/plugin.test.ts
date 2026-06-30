@@ -19,19 +19,20 @@ import * as assert from "assert";
 
 import { exec as execCb, spawnSync } from "child_process";
 import { rm } from "fs/promises";
-import path from "path";
 import { describe, before, after, it } from "node:test";
+import { fileURLToPath } from "url";
 
 import { promisify } from "util";
 
 const exec = promisify(execCb);
+const testDirectory = fileURLToPath(new URL(".", import.meta.url));
 
 function startTestApp(bundler: string) {
   return spawnSync(
     process.execPath,
-    ["--require", "./test-app/register.js", `../test-dist/${bundler}/app.js`],
+    ["--require", "./test-app/register.cjs", `../test-dist/${bundler}/app.cjs`],
     {
-      cwd: __dirname,
+      cwd: testDirectory,
       timeout: 60_000,
       killSignal: "SIGKILL", // SIGTERM is not sufficient to terminate some hangs
       env: {
@@ -90,27 +91,27 @@ function getTrace(stdOutLines: string[], spanName: string) {
   {
     scriptFile: "build.ts",
     bundler: "esbuild",
-    distFiles: ["app.js"],
+    distFiles: ["app.cjs"],
   },
   {
     scriptFile: "build.ts",
     bundler: "webpack",
-    distFiles: ["app.js", "app.js.LICENSE.txt"],
+    distFiles: ["app.cjs", "app.cjs.LICENSE.txt"],
   },
   {
     scriptFile: "build.ts",
     bundler: "rollup",
-    distFiles: ["app.js"],
+    distFiles: ["app.cjs"],
   },
   {
     scriptFile: "build.ts",
     bundler: "unplugin-rollup",
-    distFiles: ["app.js"],
+    distFiles: ["app.cjs"],
   },
   {
     scriptFile: "build.ts",
     bundler: "unplugin-rolldown",
-    distFiles: ["app.js"],
+    distFiles: ["app.cjs"],
   },
 ].forEach(({ scriptFile, bundler, distFiles }) => {
   describe(
@@ -127,8 +128,11 @@ function getTrace(stdOutLines: string[], spanName: string) {
           // Using fastify in the test server so enable it
           "fastify",
         ];
+        const buildScript = fileURLToPath(
+          new URL(`${bundler}/${scriptFile}`, import.meta.url)
+        );
         await exec(
-          `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} ts-node ${__dirname}/${bundler}/${scriptFile}`
+          `OTEL_NODE_ENABLED_INSTRUMENTATIONS=${enabledInstrumentations.join(",")} tsx ${buildScript}`
         );
 
         const proc = startTestApp(bundler);
@@ -152,7 +156,9 @@ function getTrace(stdOutLines: string[], spanName: string) {
       after(async () => {
         for (const distFile of distFiles) {
           await rm(
-            path.normalize(`${__dirname}/../test-dist/${bundler}/${distFile}`)
+            fileURLToPath(
+              new URL(`../test-dist/${bundler}/${distFile}`, import.meta.url)
+            )
           );
         }
       });

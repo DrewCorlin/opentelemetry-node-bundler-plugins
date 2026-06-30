@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OnLoadArgs, PluginData } from "./types";
+import type { OnLoadArgs, PluginData } from "./types.js";
 import { Plugin, PluginBuild } from "esbuild";
 import { dirname, join } from "path";
 

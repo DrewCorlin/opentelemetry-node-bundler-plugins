@@ -1,4 +1,4 @@
-import { NODE_MODULES } from "./common";
+import { NODE_MODULES } from "./common.js";
 
 export function shouldIgnoreModule({
   path,
