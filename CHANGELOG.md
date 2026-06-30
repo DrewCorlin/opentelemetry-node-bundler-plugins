@@ -1,3 +1,13 @@
+## 4.5.0 (2026-06-30)
+
+### 🚀 Features
+
+- add unplugin bundler plugin ([#17](https://github.com/DrewCorlin/-opentelemetry-bundler-plugins/pull/17))
+
+### ❤️ Thank You
+
+- Abhi Agarwal @abhiaagarwal
+
 ## 4.4.0 (2026-02-01)
 
 ### 🩹 Fixes
