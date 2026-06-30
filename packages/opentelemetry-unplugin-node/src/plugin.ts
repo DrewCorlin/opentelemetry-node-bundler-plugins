@@ -46,6 +46,7 @@ async function getModuleVersion({
   if (contents) return contents;
 
   try {
+    // __otel.js is a dummy file to produce the equivalent to CJS's `require.resolve(path, { paths: [resolveDir] })`
     const resolveFromDirectory = createRequire(join(resolveDir, "__otel.js"));
     const packageJsonPath = resolveFromDirectory.resolve(path);
     const packageJsonContents = await readFile(packageJsonPath);
