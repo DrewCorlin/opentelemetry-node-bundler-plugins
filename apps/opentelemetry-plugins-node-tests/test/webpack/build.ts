@@ -1,17 +1,18 @@
-import path from "path";
+import { fileURLToPath } from "url";
 import { OpenTelemetryWebpackPlugin } from "opentelemetry-webpack-plugin-node";
 
 import webpack from "webpack";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import TerserPlugin from "terser-webpack-plugin";
+
 webpack(
   {
     target: "node",
     mode: "production",
-    entry: path.normalize(`${__dirname}/../test-app/app.ts`),
+    entry: fileURLToPath(new URL("../test-app/app.ts", import.meta.url)),
     output: {
-      path: path.normalize(`${__dirname}/../../test-dist/webpack`),
-      filename: "app.js",
+      path: fileURLToPath(new URL("../../test-dist/webpack", import.meta.url)),
+      filename: "app.cjs",
     },
     optimization: {
       minimizer: [
@@ -29,7 +30,12 @@ webpack(
       rules: [
         {
           test: /\.ts$/,
-          use: "ts-loader",
+          use: {
+            loader: "ts-loader",
+            options: {
+              transpileOnly: true,
+            },
+          },
           exclude: /node_modules/,
         },
         {
@@ -70,7 +76,7 @@ webpack(
   (err, stats) => {
     if (err || stats?.hasErrors()) {
       console.error(err, stats?.toString());
-      throw err;
+      throw err ?? new Error("Webpack compilation failed");
     }
   }
 );

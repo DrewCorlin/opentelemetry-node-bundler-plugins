@@ -17,12 +17,12 @@
 import { build } from "esbuild";
 import { openTelemetryPlugin } from "opentelemetry-esbuild-plugin-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import path from "path";
+import { fileURLToPath } from "url";
 
 build({
-  entryPoints: [path.normalize(`${__dirname}/../test-app/app.ts`)],
+  entryPoints: [fileURLToPath(new URL("../test-app/app.ts", import.meta.url))],
   bundle: true,
-  outfile: "test-dist/esbuild/app.js",
+  outfile: "test-dist/esbuild/app.cjs",
   target: "node20",
   platform: "node",
   plugins: [
