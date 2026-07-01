@@ -1,5 +1,8 @@
-import { NODE_MODULES } from "./common";
-import { ExtractedModule } from "./types";
+import { createRequire } from "node:module";
+import { NODE_MODULES } from "./common.js";
+import type { ExtractedModule } from "./types.js";
+
+const require = createRequire(import.meta.url);
 
 /**
  * For a given full path to a module,

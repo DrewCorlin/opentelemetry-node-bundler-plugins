@@ -14,5 +14,5 @@
  * limitations under the License.
  */
 
-export { openTelemetryPlugin } from "./plugin";
+export { openTelemetryPlugin } from "./plugin.js";
 export type { OpenTelemetryPluginParams } from "opentelemetry-node-bundler-plugin-utils";

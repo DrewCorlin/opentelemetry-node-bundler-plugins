@@ -2,10 +2,14 @@
   "name": "opentelemetry-unplugin-node",
   "description": "Unplugin plugin which bundles opentelemetry node core and contrib instrumentations into your code",
   "version": "4.5.0",
-  "main": "./dist/index.js",
+  "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "type": "module",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "license": "MIT",
   "engines": {
     "node": ">=20.19.0"
@@ -37,20 +41,32 @@
           "cwd": "packages/opentelemetry-unplugin-node",
           "command": "rm -rf dist"
         }
+      },
+      "build": {
+        "executor": "nx:run-commands",
+        "options": {
+          "cwd": "packages/opentelemetry-unplugin-node",
+          "command": "tsdown"
+        }
       }
     }
   },
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
       "default": "./dist/index.js"
     }
   },
   "dependencies": {
     "opentelemetry-node-bundler-plugin-utils": "0.8.0",
-    "tslib": "^2.3.0",
     "unplugin": "^3.0.0"
   }
 }

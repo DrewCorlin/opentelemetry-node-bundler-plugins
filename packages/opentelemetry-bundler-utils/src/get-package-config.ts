@@ -1,7 +1,7 @@
-import {
+import type {
   OpenTelemetryPluginParams,
   OtelPluginInstrumentationConfigMap,
-} from "./types";
+} from "./types.js";
 
 export function getPackageConfig({
   pluginConfig,

@@ -6,7 +6,9 @@ export default [
     ...nx.configs["flat/javascript"],
     {
         ignores: [
-            "**/dist"
+            "**/dist/**",
+            "**/test-dist/**",
+            "**/.rollup.cache/**"
         ]
     },
     {

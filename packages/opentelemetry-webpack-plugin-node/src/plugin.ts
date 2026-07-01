@@ -1,12 +1,14 @@
 import { readFile } from "fs/promises";
 import path from "path";
+import { createRequire } from "module";
 
-import { PluginData } from "./types";
+import type { PluginData } from "./types.js";
 import {
   InstrumentationConfig,
   InstrumentationModuleDefinition,
 } from "@opentelemetry/instrumentation";
-import { Compiler, NormalModule } from "webpack";
+import webpack from "webpack";
+import type { Compiler } from "webpack";
 import { writeFileSync } from "fs";
 import os from "os";
 import {
@@ -22,6 +24,8 @@ import {
 } from "opentelemetry-node-bundler-plugin-utils";
 
 const tempLoaderPath = path.join(os.tmpdir(), "otel-string-replace-loader.js");
+const require = createRequire(import.meta.url);
+const { NormalModule } = webpack;
 
 if (!require.cache[tempLoaderPath]) {
   writeFileSync(
@@ -38,7 +42,7 @@ if (!require.cache[tempLoaderPath]) {
           oTelInstrumentationConstructorArgs
         } = this.getOptions();
 
-        return wrapModule(originalSource, {
+        const result = wrapModule(originalSource, {
           path,
           moduleVersion,
           instrumentationName,
@@ -46,6 +50,7 @@ if (!require.cache[tempLoaderPath]) {
           oTelInstrumentationPackage,
           oTelInstrumentationConstructorArgs
         });
+        this.callback(null, result.code, result.map);
       };
     `
   );

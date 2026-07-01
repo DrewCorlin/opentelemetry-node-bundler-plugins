@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { OnLoadArgs, PluginData } from "./types";
+import type { OnLoadArgs, PluginData } from "./types.js";
 import { Plugin, PluginBuild } from "esbuild";
 import { dirname, join } from "path";
 
@@ -27,6 +27,7 @@ import {
   getOtelPackageToInstrumentationConfig,
   getPackageConfig,
   isBuiltIn,
+  CodeTransform,
   OpenTelemetryPluginParams,
   shouldIgnoreModule,
   wrapModule,
@@ -121,22 +122,35 @@ export function openTelemetryPlugin(
           });
           const extractedModule = pluginData.extractedModule;
 
+          const result = wrapModule(contents.toString(), {
+            path: join(extractedModule.package, extractedModule.path),
+            moduleVersion: pluginData.moduleVersion,
+            instrumentationName: pluginData.instrumentationName,
+            oTelInstrumentationClass: config.oTelInstrumentationClass,
+            oTelInstrumentationPackage: config.oTelInstrumentationPackage,
+            oTelInstrumentationConstructorArgs:
+              config.configGenerator(packageConfig),
+          });
+
           return {
-            contents: wrapModule(contents.toString(), {
-              path: join(extractedModule.package, extractedModule.path),
-              moduleVersion: pluginData.moduleVersion,
-              instrumentationName: pluginData.instrumentationName,
-              oTelInstrumentationClass: config.oTelInstrumentationClass,
-              oTelInstrumentationPackage: config.oTelInstrumentationPackage,
-              oTelInstrumentationConstructorArgs:
-                config.configGenerator(packageConfig),
-            }),
+            contents: toEsbuildContents(result),
             resolveDir: dirname(path),
           };
         }
       );
     },
   };
+}
+
+function toEsbuildContents({ code, map }: CodeTransform): string {
+  if (!map) return code;
+
+  // esbuild's onLoad result has no separate source map field. It consumes
+  // plugin-generated maps through an inline sourceMappingURL in contents.
+  // example: https://esbuild.github.io/plugins/#svelte-plugin
+  const sourceMap = typeof map === "string" ? map : map.toString();
+  const encodedMap = Buffer.from(sourceMap).toString("base64");
+  return `${code}\n//# sourceMappingURL=data:application/json;base64,${encodedMap}`;
 }
 
 const moduleVersionByPackageJsonPath = new Map<string, string>();

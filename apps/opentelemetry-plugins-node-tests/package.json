@@ -1,6 +1,7 @@
 {
   "name": "@opentelemetry-bundler-plugins/tests",
   "version": "0.0.1",
+  "type": "module",
   "license": "MIT",
   "nx": {
     "targets": {
@@ -14,7 +15,7 @@
         ],
         "options": {
           "cwd": "apps/opentelemetry-plugins-node-tests",
-          "command": "nyc node --require ts-node/register --test 'test/**/*.test.ts'",
+          "command": "nyc tsx --test 'test/**/*.test.ts'",
           "outputPath": "packages/opentelemetry-plugins-node-tests/test-dist"
         }
       },
@@ -53,7 +54,7 @@
     "rollup": "^4.41.1",
     "terser-webpack-plugin": "^5.3.14",
     "ts-loader": "^9.5.2",
-    "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
     "typescript": "5.8.3",
     "webpack": "^5.99.7"
   }

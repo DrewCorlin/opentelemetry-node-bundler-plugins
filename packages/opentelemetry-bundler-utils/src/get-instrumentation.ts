@@ -1,7 +1,7 @@
 import { InstrumentationModuleDefinition } from "@opentelemetry/instrumentation";
 
 import { satisfies } from "semver";
-import { ExtractedModule } from "./types";
+import type { ExtractedModule } from "./types.js";
 
 export function getInstrumentation({
   instrumentationModuleDefinitions,

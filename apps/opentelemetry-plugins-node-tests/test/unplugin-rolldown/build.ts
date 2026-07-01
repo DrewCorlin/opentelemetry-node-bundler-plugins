@@ -15,17 +15,13 @@
  */
 
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import path from "path";
+import { rolldown } from "rolldown";
+import { openTelemetryPlugin } from "opentelemetry-unplugin-node";
+import { fileURLToPath } from "url";
 
 async function build() {
-  // Needed since ts-node is running in CJS mode 
-  const [{ rolldown }, { openTelemetryPlugin }] = await Promise.all([
-    import("rolldown"),
-    import("opentelemetry-unplugin-node"),
-  ]);
-
   const bundle = await rolldown({
-    input: path.normalize(`${__dirname}/../test-app/app.ts`),
+    input: fileURLToPath(new URL("../test-app/app.ts", import.meta.url)),
     platform: "node",
     plugins: [
       openTelemetryPlugin.rolldown({
@@ -48,8 +44,11 @@ async function build() {
   });
 
   await bundle.write({
-    file: path.normalize(`${__dirname}/../../test-dist/unplugin-rolldown/app.js`),
+    file: fileURLToPath(
+      new URL("../../test-dist/unplugin-rolldown/app.cjs", import.meta.url)
+    ),
     format: "cjs",
+    sourcemap: true,
   });
 
   await bundle.close();

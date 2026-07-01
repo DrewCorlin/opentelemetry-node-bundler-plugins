@@ -18,8 +18,8 @@ import {
   Instrumentation,
   InstrumentationModuleDefinition,
 } from "@opentelemetry/instrumentation";
-import { OtelPluginInstrumentationConfigMap } from "./types";
-import { stringify } from 'javascript-stringify';
+import type { OtelPluginInstrumentationConfigMap } from "./types.js";
+import { stringify } from "javascript-stringify";
 
 function getModuleDefinitions(
   instrumentation: Instrumentation

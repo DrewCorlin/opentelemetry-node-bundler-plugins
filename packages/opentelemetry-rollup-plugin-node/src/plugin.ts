@@ -16,6 +16,7 @@
 
 import { Plugin } from "rollup";
 import { readFile } from "fs/promises";
+import { createRequire } from "module";
 import { dirname, join } from "path";
 import {
   ExtractedModule,
@@ -28,7 +29,9 @@ import {
   shouldIgnoreModule,
   wrapModule,
 } from "opentelemetry-node-bundler-plugin-utils";
-import { PluginData } from "./types";
+import type { PluginData } from "./types.js";
+
+const require = createRequire(import.meta.url);
 
 const moduleVersionByPackageJsonPath = new Map<string, string>();
 
@@ -135,7 +138,8 @@ export function openTelemetryPlugin(
       const config = meta.instrumentationName
         ? otelPackageToInstrumentationConfig[meta.instrumentationName]
         : undefined;
-      if (!config) return null;
+      const moduleVersion = meta.moduleVersion;
+      if (!config || !moduleVersion) return null;
 
       const packageConfig = getPackageConfig({
         pluginConfig,
@@ -144,7 +148,7 @@ export function openTelemetryPlugin(
 
       return wrapModule(code, {
         path: join(meta.extractedModule.package, meta.extractedModule.path),
-        moduleVersion: meta.moduleVersion!,
+        moduleVersion,
         instrumentationName: meta.instrumentationName,
         oTelInstrumentationClass: config.oTelInstrumentationClass,
         oTelInstrumentationPackage: config.oTelInstrumentationPackage,
