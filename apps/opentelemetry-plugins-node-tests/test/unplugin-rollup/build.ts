@@ -48,7 +48,7 @@ async function build() {
       json(),
       typescript({
         tsconfig: fileURLToPath(new URL("../../tsconfig.json", import.meta.url)),
-        sourceMap: false,
+        sourceMap: true,
       }),
     ],
   });
@@ -58,6 +58,7 @@ async function build() {
       new URL("../../test-dist/unplugin-rollup/app.cjs", import.meta.url)
     ),
     format: "cjs",
+    sourcemap: true,
   });
 
   await bundle.close();

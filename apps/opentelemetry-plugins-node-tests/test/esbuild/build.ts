@@ -23,6 +23,7 @@ build({
   entryPoints: [fileURLToPath(new URL("../test-app/app.ts", import.meta.url))],
   bundle: true,
   outfile: "test-dist/esbuild/app.cjs",
+  sourcemap: true,
   target: "node20",
   platform: "node",
   plugins: [

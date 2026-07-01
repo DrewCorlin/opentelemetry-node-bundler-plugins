@@ -10,6 +10,7 @@ export default defineConfig({
   platform: "node",
   attw: true,
   deps: {
-    skipNodeModulesBundle: true,
+    alwaysBundle: ["rolldown-string"],
+    onlyBundle: false,
   },
 });

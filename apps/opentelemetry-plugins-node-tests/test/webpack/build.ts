@@ -9,6 +9,7 @@ webpack(
   {
     target: "node",
     mode: "production",
+    devtool: "source-map",
     entry: fileURLToPath(new URL("../test-app/app.ts", import.meta.url)),
     output: {
       path: fileURLToPath(new URL("../../test-dist/webpack", import.meta.url)),

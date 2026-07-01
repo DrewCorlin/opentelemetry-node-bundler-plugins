@@ -48,6 +48,7 @@ async function build() {
       new URL("../../test-dist/unplugin-rolldown/app.cjs", import.meta.url)
     ),
     format: "cjs",
+    sourcemap: true,
   });
 
   await bundle.close();

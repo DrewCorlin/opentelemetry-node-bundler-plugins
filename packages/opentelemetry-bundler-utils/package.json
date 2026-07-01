@@ -55,6 +55,7 @@
   "dependencies": {
     "@opentelemetry/instrumentation": "^0.200.0",
     "javascript-stringify": "^2.1.0",
+    "rolldown-string": "^0.3.0",
     "semver": "^7.7.1"
   },
   "devDependencies": {

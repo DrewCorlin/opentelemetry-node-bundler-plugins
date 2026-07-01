@@ -91,27 +91,27 @@ function getTrace(stdOutLines: string[], spanName: string) {
   {
     scriptFile: "build.ts",
     bundler: "esbuild",
-    distFiles: ["app.cjs"],
+    distFiles: ["app.cjs", "app.cjs.map"],
   },
   {
     scriptFile: "build.ts",
     bundler: "webpack",
-    distFiles: ["app.cjs", "app.cjs.LICENSE.txt"],
+    distFiles: ["app.cjs", "app.cjs.map", "app.cjs.LICENSE.txt"],
   },
   {
     scriptFile: "build.ts",
     bundler: "rollup",
-    distFiles: ["app.cjs"],
+    distFiles: ["app.cjs", "app.cjs.map"],
   },
   {
     scriptFile: "build.ts",
     bundler: "unplugin-rollup",
-    distFiles: ["app.cjs"],
+    distFiles: ["app.cjs", "app.cjs.map"],
   },
   {
     scriptFile: "build.ts",
     bundler: "unplugin-rolldown",
-    distFiles: ["app.cjs"],
+    distFiles: ["app.cjs", "app.cjs.map"],
   },
 ].forEach(({ scriptFile, bundler, distFiles }) => {
   describe(

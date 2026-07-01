@@ -42,7 +42,7 @@ if (!require.cache[tempLoaderPath]) {
           oTelInstrumentationConstructorArgs
         } = this.getOptions();
 
-        return wrapModule(originalSource, {
+        const result = wrapModule(originalSource, {
           path,
           moduleVersion,
           instrumentationName,
@@ -50,6 +50,7 @@ if (!require.cache[tempLoaderPath]) {
           oTelInstrumentationPackage,
           oTelInstrumentationConstructorArgs
         });
+        this.callback(null, result.code, result.map);
       };
     `
   );
