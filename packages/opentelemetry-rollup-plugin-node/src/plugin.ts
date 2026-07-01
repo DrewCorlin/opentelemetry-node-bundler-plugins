@@ -138,7 +138,8 @@ export function openTelemetryPlugin(
       const config = meta.instrumentationName
         ? otelPackageToInstrumentationConfig[meta.instrumentationName]
         : undefined;
-      if (!config) return null;
+      const moduleVersion = meta.moduleVersion;
+      if (!config || !moduleVersion) return null;
 
       const packageConfig = getPackageConfig({
         pluginConfig,
@@ -147,7 +148,7 @@ export function openTelemetryPlugin(
 
       return wrapModule(code, {
         path: join(meta.extractedModule.package, meta.extractedModule.path),
-        moduleVersion: meta.moduleVersion!,
+        moduleVersion,
         instrumentationName: meta.instrumentationName,
         oTelInstrumentationClass: config.oTelInstrumentationClass,
         oTelInstrumentationPackage: config.oTelInstrumentationPackage,

@@ -59,7 +59,6 @@
   },
   "dependencies": {
     "@opentelemetry/instrumentation": "^0.200.0",
-    "tslib": "^2.8.1",
     "webpack": "^5.99.7",
     "opentelemetry-node-bundler-plugin-utils": "0.8.0"
   },

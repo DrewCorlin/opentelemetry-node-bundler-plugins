@@ -58,7 +58,6 @@
     }
   },
   "dependencies": {
-    "tslib": "^2.3.0",
     "opentelemetry-node-bundler-plugin-utils": "0.8.0",
     "rollup": "^4.41.1"
   }
