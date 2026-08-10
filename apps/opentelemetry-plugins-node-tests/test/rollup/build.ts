@@ -17,6 +17,7 @@
 import { rollup } from "rollup";
 import { openTelemetryPlugin } from "opentelemetry-rollup-plugin-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify";
 import path from "path";
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
@@ -29,20 +30,22 @@ async function build() {
     plugins: [
       nodeResolve({ extensions: [".mjs", ".js", ".json", ".ts"] }),
       openTelemetryPlugin({
-        instrumentations: getNodeAutoInstrumentations({
-          "@opentelemetry/instrumentation-pino": {
-            logKeys: {
-              traceId: "traceId",
-              spanId: "spanId",
-              traceFlags: "traceFlags",
+        instrumentations: [
+          ...getNodeAutoInstrumentations({
+            "@opentelemetry/instrumentation-pino": {
+              logKeys: {
+                traceId: "traceId",
+                spanId: "spanId",
+                traceFlags: "traceFlags",
+              },
             },
-          },
-          "@opentelemetry/instrumentation-fastify": {
+          }),
+          new FastifyInstrumentation({
             requestHook: (span) => {
               span.setAttribute("test.attribute", "test");
             },
-          },
-        }),
+          }),
+        ],
       }),
       commonjs(),
       json(),
@@ -56,6 +59,7 @@ async function build() {
   await bundle.write({
     file: path.normalize(`${__dirname}/../../test-dist/rollup/app.js`),
     format: "cjs",
+    inlineDynamicImports: true,
   });
 
   await bundle.close();

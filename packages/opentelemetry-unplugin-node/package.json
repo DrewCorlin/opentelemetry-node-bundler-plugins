@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "opentelemetry-node-bundler-plugin-utils": "0.8.0",
-    "tslib": "^2.3.0",
-    "unplugin": "^3.0.0"
+    "tslib": "^2.8.1",
+    "unplugin": "^3.3.0"
   }
 }

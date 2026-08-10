@@ -12,6 +12,7 @@
     "forceConsistentCasingInFileNames": true,
     "importHelpers": true,
     "incremental": true,
+    "ignoreDeprecations": "6.0",
     "isolatedModules": true,
     "lib": ["es2022"],
     "module": "NodeNext",

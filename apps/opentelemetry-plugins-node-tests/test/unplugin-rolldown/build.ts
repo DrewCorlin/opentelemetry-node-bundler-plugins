@@ -15,6 +15,7 @@
  */
 
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify";
 import path from "path";
 
 async function build() {
@@ -29,20 +30,22 @@ async function build() {
     platform: "node",
     plugins: [
       openTelemetryPlugin.rolldown({
-        instrumentations: getNodeAutoInstrumentations({
-          "@opentelemetry/instrumentation-pino": {
-            logKeys: {
-              traceId: "traceId",
-              spanId: "spanId",
-              traceFlags: "traceFlags",
+        instrumentations: [
+          ...getNodeAutoInstrumentations({
+            "@opentelemetry/instrumentation-pino": {
+              logKeys: {
+                traceId: "traceId",
+                spanId: "spanId",
+                traceFlags: "traceFlags",
+              },
             },
-          },
-          "@opentelemetry/instrumentation-fastify": {
+          }),
+          new FastifyInstrumentation({
             requestHook: (span) => {
               span.setAttribute("test.attribute", "test");
             },
-          },
-        }),
+          }),
+        ],
       }),
     ],
   });
@@ -50,6 +53,7 @@ async function build() {
   await bundle.write({
     file: path.normalize(`${__dirname}/../../test-dist/unplugin-rolldown/app.js`),
     format: "cjs",
+    codeSplitting: false,
   });
 
   await bundle.close();

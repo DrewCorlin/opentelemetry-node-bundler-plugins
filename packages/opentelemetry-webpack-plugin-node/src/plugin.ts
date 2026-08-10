@@ -65,6 +65,7 @@ export class OpenTelemetryWebpackPlugin {
   >;
   private instrumentationModuleDefinitions: InstrumentationModuleDefinition[];
   private moduleVersionByPackageJsonPath: Map<string, string>;
+  private pluginDataByResourceResolveData: WeakMap<object, PluginData>;
 
   constructor(pluginConfig: OpenTelemetryPluginParams) {
     this.pluginConfig = pluginConfig;
@@ -78,6 +79,7 @@ export class OpenTelemetryWebpackPlugin {
       otelPackageToInstrumentationConfig;
     this.instrumentationModuleDefinitions = instrumentationModuleDefinitions;
     this.moduleVersionByPackageJsonPath = new Map();
+    this.pluginDataByResourceResolveData = new WeakMap();
   }
 
   apply(compiler: Compiler) {
@@ -150,8 +152,10 @@ export class OpenTelemetryWebpackPlugin {
               oTelInstrumentationConstructorArgs:
                 config.configGenerator(packageConfig),
             };
-            resolveData.createData.resourceResolveData.__otelPluginData =
-              pluginData;
+            this.pluginDataByResourceResolveData.set(
+              resolveData.createData.resourceResolveData,
+              pluginData
+            );
           }
         );
       }
@@ -163,8 +167,11 @@ export class OpenTelemetryWebpackPlugin {
         NormalModule.getCompilationHooks(compilation).loader.tap(
           "OpenTelemetryWebpackPlugin",
           (_, normalModule) => {
-            const pluginData: PluginData =
-              normalModule.resourceResolveData.__otelPluginData;
+            const pluginData = normalModule.resourceResolveData
+              ? this.pluginDataByResourceResolveData.get(
+                  normalModule.resourceResolveData
+                )
+              : undefined;
 
             if (pluginData) {
               // TODO: our wrapModule function assumes CJS. Document need for loader to transpile
