@@ -17,6 +17,7 @@
 import { build } from "esbuild";
 import { openTelemetryPlugin } from "opentelemetry-esbuild-plugin-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify";
 import path from "path";
 
 build({
@@ -27,20 +28,22 @@ build({
   platform: "node",
   plugins: [
     openTelemetryPlugin({
-      instrumentations: getNodeAutoInstrumentations({
-        "@opentelemetry/instrumentation-pino": {
-          logKeys: {
-            traceId: "traceId",
-            spanId: "spanId",
-            traceFlags: "traceFlags",
+      instrumentations: [
+        ...getNodeAutoInstrumentations({
+          "@opentelemetry/instrumentation-pino": {
+            logKeys: {
+              traceId: "traceId",
+              spanId: "spanId",
+              traceFlags: "traceFlags",
+            },
           },
-        },
-        "@opentelemetry/instrumentation-fastify": {
+        }),
+        new FastifyInstrumentation({
           requestHook: (span) => {
             span.setAttribute("test.attribute", "test");
           },
-        },
-      }),
+        }),
+      ],
     }),
   ],
 }).catch((err) => {

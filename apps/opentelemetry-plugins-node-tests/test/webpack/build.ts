@@ -3,6 +3,7 @@ import { OpenTelemetryWebpackPlugin } from "opentelemetry-webpack-plugin-node";
 
 import webpack from "webpack";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
+import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify";
 import TerserPlugin from "terser-webpack-plugin";
 webpack(
   {
@@ -50,20 +51,22 @@ webpack(
     },
     plugins: [
       new OpenTelemetryWebpackPlugin({
-        instrumentations: getNodeAutoInstrumentations({
-          "@opentelemetry/instrumentation-pino": {
-            logKeys: {
-              traceId: "traceId",
-              spanId: "spanId",
-              traceFlags: "traceFlags",
+        instrumentations: [
+          ...getNodeAutoInstrumentations({
+            "@opentelemetry/instrumentation-pino": {
+              logKeys: {
+                traceId: "traceId",
+                spanId: "spanId",
+                traceFlags: "traceFlags",
+              },
             },
-          },
-          "@opentelemetry/instrumentation-fastify": {
+          }),
+          new FastifyInstrumentation({
             requestHook: (span) => {
               span.setAttribute("test.attribute", "test");
             },
-          },
-        }),
+          }),
+        ],
       }),
     ],
   },

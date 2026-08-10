@@ -4,9 +4,6 @@
   "include": [],
   "references": [
     {
-      "path": "../opentelemetry-bundler-utils"
-    },
-    {
       "path": "./tsconfig.lib.json"
     }
   ]
