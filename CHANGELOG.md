@@ -1,3 +1,18 @@
+## 4.6.0 (2026-08-24)
+
+### 🚀 Features
+
+- add unplugin bundler plugin ([#17](https://github.com/DrewCorlin/-opentelemetry-bundler-plugins/pull/17))
+
+### 🩹 Fixes
+
+- remove limits on esbuild versions ([#16](https://github.com/DrewCorlin/-opentelemetry-bundler-plugins/pull/16))
+
+### ❤️ Thank You
+
+- Abhi Agarwal @abhiaagarwal
+- Fred Cox @mcfedr
+
 ## 4.5.0 (2026-06-30)
 
 ### 🚀 Features

@@ -1,7 +1,7 @@
 {
   "name": "opentelemetry-unplugin-node",
   "description": "Unplugin plugin which bundles opentelemetry node core and contrib instrumentations into your code",
-  "version": "4.5.0",
+  "version": "4.6.0",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -67,7 +67,7 @@
     }
   },
   "dependencies": {
-    "opentelemetry-node-bundler-plugin-utils": "0.8.0",
+    "opentelemetry-node-bundler-plugin-utils": "0.9.0",
     "unplugin": "^3.0.0"
   }
 }
