@@ -1,5 +1,4 @@
 import path from "path";
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { OpenTelemetryWebpackPlugin } from "opentelemetry-webpack-plugin-node";
 
 import webpack from "webpack";
@@ -10,6 +9,7 @@ webpack(
   {
     target: "node",
     mode: "production",
+    devtool: "source-map",
     entry: path.join(import.meta.dirname, "../test-app/app.ts"),
     output: {
       path: path.join(import.meta.dirname, "../../test-dist/webpack"),
@@ -34,7 +34,7 @@ webpack(
           use: {
             loader: "ts-loader",
             options: {
-              configFile: path.join(import.meta.dirname, "../../tsconfig.webpack.json")
+              transpileOnly: true,
             },
           },
           exclude: /node_modules/,

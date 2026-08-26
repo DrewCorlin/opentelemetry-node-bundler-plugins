@@ -15,7 +15,6 @@
  */
 
 import { rollup } from "rollup";
-// eslint-disable-next-line @nx/enforce-module-boundaries
 import { openTelemetryPlugin } from "opentelemetry-unplugin-node";
 import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
 import path from "path";
@@ -49,17 +48,15 @@ async function build() {
       json(),
       typescript({
         tsconfig: path.join(import.meta.dirname, "../../tsconfig.json"),
-        sourceMap: false,
+        sourceMap: true,
       }),
     ],
   });
 
   await bundle.write({
-    file: path.join(
-      import.meta.dirname,
-      "../../test-dist/unplugin-rollup/app.cjs",
-    ),
+    file: path.join(import.meta.dirname, "../../test-dist/unplugin-rollup/app.cjs"),
     format: "cjs",
+    sourcemap: true,
   });
 
   await bundle.close();

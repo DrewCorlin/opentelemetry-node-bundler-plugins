@@ -24,6 +24,7 @@ build({
   entryPoints: [path.join(import.meta.dirname, "../test-app/app.ts")],
   bundle: true,
   outfile: "test-dist/esbuild/app.cjs",
+  sourcemap: true,
   target: "node20",
   platform: "node",
   plugins: [

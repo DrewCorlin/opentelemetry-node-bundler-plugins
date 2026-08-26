@@ -14,8 +14,13 @@
  * limitations under the License.
  */
 
+import type { CodeTransform as RolldownStringTransform } from "rolldown-string";
+import { generateTransform, rolldownString } from "rolldown-string";
+
+export type CodeTransform = RolldownStringTransform;
+
 interface ModuleParams {
-  path?: string;
+  path: string;
   oTelInstrumentationPackage: string;
   oTelInstrumentationClass: string;
   oTelInstrumentationConstructorArgs?: string;
@@ -33,10 +38,11 @@ export function wrapModule(
     instrumentationName,
     oTelInstrumentationConstructorArgs = "",
   }: ModuleParams
-): string {
-  return `
-(function() {
-  ${originalSource}
+): CodeTransform {
+  const s = rolldownString(originalSource, path);
+
+  s.prepend("(function() {\n");
+  s.append(`
 })(...arguments);
 {
   const { diag } = require('@opentelemetry/api');
@@ -76,5 +82,11 @@ export function wrapModule(
     diag.error('Error applying instrumentation ${instrumentationName}', e);
   }
 }
-`;
+`);
+
+  const result = generateTransform(s, path, true);
+  if (!result) {
+    throw new Error(`Failed to generate wrapped module transform for ${path}`);
+  }
+  return result;
 }

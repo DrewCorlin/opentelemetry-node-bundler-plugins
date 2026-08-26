@@ -50,6 +50,7 @@ async function build() {
       "../../test-dist/unplugin-rolldown/app.cjs",
     ),
     format: "cjs",
+    sourcemap: true,
   });
 
   await bundle.close();
